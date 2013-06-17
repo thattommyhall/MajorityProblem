@@ -1,4 +1,4 @@
-# ca-vote
+# MajorityProblem 
 
 Trying to solve the [Majority Problem](http://en.wikipedia.org/wiki/Majority_problem_%28cellular_automaton%29) using Genetic algorithms
 
