@@ -1,0 +1,2 @@
+(ns ca-vote.worker)
+
