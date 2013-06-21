@@ -28,4 +28,10 @@
                        {:source-paths ["src/cljs"]
                         :compiler {:output-to "resources/public/js/prod.js"
                                    :optimizations :advanced}}
+
+                       :worker
+                       {:source-paths ["src/worker"]
+                        :compiler {:output-to "resources/public/js/worker.js"
+                                   :optimizations :advanced}}
+
                }})

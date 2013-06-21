@@ -7,7 +7,7 @@
 
 (defn from-layout [title content]
   (html [:head {:title title}
-         [:script {:src "js/prod.js"}]
+         [:script {:src "js/dev.js"}]
          content]))
 
 (defroutes app-routes

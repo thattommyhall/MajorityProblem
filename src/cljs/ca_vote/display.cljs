@@ -1,22 +1,21 @@
 (ns ca-vote.display
-  (:use [domina :only [by-id value]]))
+  (:use [domina :only [by-id value]])
+  (:require [clojure.string :as string]))
 
 (defn ^:export now []
   (.getTime (js/Date.)))
-  
+
 (defn log [& message]
-  (.log js/console (str message)))
+  (.log js/console (string/join " " message)))
 
 (def line_colour "#cdcdcd")
 (def background "#eee")
 (def liveColor "#666")
 (def deadColor "#eee")
 (def padding 0)
-(def cells 301)
+(def cells 101)
 (def cell_size (atom 0))
 (def p 0.5)
-(def start (atom nil))
-(def end (atom nil))
 
 (defn normalise [n]
   (if (< n 0)
@@ -29,10 +28,8 @@
                  [0 -1 -3]
                  [0 1 3])
         considered (map #(nth grid (normalise (+ pos %))) deltas)]
-    ;; (log (count (filter true? considered)))
     (>= (count (filter true? considered))
-       2)))
-        
+        2)))
 
 (defn fill_sq [x y colour context]
   (set! (.-fillStyle context) colour)
@@ -55,7 +52,6 @@
   (fill_sq x y deadColor context))
 
 (defn ^:export draw []
-  (reset! start (now))
   (let [board (by-id "voting")
         context (.getContext board "2d")
         width (.-width board)
@@ -70,23 +66,13 @@
             (swap! grid assoc-in [0 x] true))
         (do (dead x 0 context)
             (swap! grid assoc-in [0 x] false))))
-    ;; (log grid)
-    (doseq [y (range 1 cells)
-            x (range cells)]
-      ;; (log grid)
-      (if (alive? x (nth @grid (dec y)))
-        (do (swap! grid assoc-in [y x] true)
-            (alive x y context))
-        (do (swap! grid assoc-in [y x] false)       
-            (dead x y context))))
-    (log (- (now) @start))
-    ;; (alive 0 1 context)
-    ;; (dead 2 2 context)
-    ))
+    (doseq [y (range 1 cells)]
+      (log y)
+      (doseq [x (range cells)]
 
-
-
-      
-
+        (if (alive? x (nth @grid (dec y)))
+          (do (swap! grid assoc-in [y x] true)
+              (alive x y context))
+          (do (swap! grid assoc-in [y x] false)       
+              (dead x y context)))))))
     
-  
