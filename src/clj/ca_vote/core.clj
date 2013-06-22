@@ -5,16 +5,15 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]))
 
-(defn from-layout [title content]
-  (html [:head {:title title}
-         [:script {:src "js/dev.js"}]
-         content]))
+(defn for-env [env]
+  (html [:head {:title env}                           
+         [:script {:src (str "js/" env ".js")}]
+         [:body {:onload "ca_vote.display.draw()"}]
+         [:canvas#voting {:width "800" :height "800"}]]))  
 
 (defroutes app-routes
-  (GET "/" []
-       (from-layout "Display" 
-                    [:body {:onload "ca_vote.display.draw()"}
-                     [:canvas#voting {:width "800" :height "800"}]]))
+  (GET "/:env" [env]
+       (for-env env))
   (route/resources "/")
   (route/not-found "Page not found"))
 

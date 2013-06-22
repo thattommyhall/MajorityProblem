@@ -21683,8 +21683,198 @@ cljs.core.special_symbol_QMARK_ = function special_symbol_QMARK_(x) {
   new cljs.core.Symbol(null, ".", ".", -1640531481, null), new cljs.core.Symbol(null, "ns", "ns", -1640528002, null), new cljs.core.Symbol(null, "do", "do", -1640528316, null), new cljs.core.Symbol(null, "fn*", "fn*", -1640430053, null), new cljs.core.Symbol(null, "throw", "throw", -1530191713, null), new cljs.core.Symbol(null, "letfn*", "letfn*", 1548249632, null), new cljs.core.Symbol(null, "js*", "js*", -1640426054, null), new cljs.core.Symbol(null, "defrecord*", "defrecord*", 774272013, null), 
   new cljs.core.Symbol(null, "let*", "let*", -1637213400, null), new cljs.core.Symbol(null, "loop*", "loop*", -1537374273, null), new cljs.core.Symbol(null, "if", "if", -1640528170, null), new cljs.core.Symbol(null, "def", "def", -1640432194, null)]), x)
 };
-goog.provide("ca_vote.worker");
+goog.provide("ca_vote.simulation");
 goog.require("cljs.core");
+ca_vote.simulation.cells = 101;
+ca_vote.simulation.random_grid = function random_grid() {
+  var result = new Array(ca_vote.simulation.cells);
+  var seq__5678_5682 = cljs.core.seq.call(null, cljs.core.range.call(null, ca_vote.simulation.cells));
+  var chunk__5679_5683 = null;
+  var count__5680_5684 = 0;
+  var i__5681_5685 = 0;
+  while(true) {
+    if(i__5681_5685 < count__5680_5684) {
+      var x_5686 = cljs.core._nth.call(null, chunk__5679_5683, i__5681_5685);
+      result[x_5686] = 0.5 > cljs.core.rand.call(null);
+      var G__5687 = seq__5678_5682;
+      var G__5688 = chunk__5679_5683;
+      var G__5689 = count__5680_5684;
+      var G__5690 = i__5681_5685 + 1;
+      seq__5678_5682 = G__5687;
+      chunk__5679_5683 = G__5688;
+      count__5680_5684 = G__5689;
+      i__5681_5685 = G__5690;
+      continue
+    }else {
+      var temp__4092__auto___5691 = cljs.core.seq.call(null, seq__5678_5682);
+      if(temp__4092__auto___5691) {
+        var seq__5678_5692__$1 = temp__4092__auto___5691;
+        if(cljs.core.chunked_seq_QMARK_.call(null, seq__5678_5692__$1)) {
+          var c__3073__auto___5693 = cljs.core.chunk_first.call(null, seq__5678_5692__$1);
+          var G__5694 = cljs.core.chunk_rest.call(null, seq__5678_5692__$1);
+          var G__5695 = c__3073__auto___5693;
+          var G__5696 = cljs.core.count.call(null, c__3073__auto___5693);
+          var G__5697 = 0;
+          seq__5678_5682 = G__5694;
+          chunk__5679_5683 = G__5695;
+          count__5680_5684 = G__5696;
+          i__5681_5685 = G__5697;
+          continue
+        }else {
+          var x_5698 = cljs.core.first.call(null, seq__5678_5692__$1);
+          result[x_5698] = 0.5 > cljs.core.rand.call(null);
+          var G__5699 = cljs.core.next.call(null, seq__5678_5692__$1);
+          var G__5700 = null;
+          var G__5701 = 0;
+          var G__5702 = 0;
+          seq__5678_5682 = G__5699;
+          chunk__5679_5683 = G__5700;
+          count__5680_5684 = G__5701;
+          i__5681_5685 = G__5702;
+          continue
+        }
+      }else {
+      }
+    }
+    break
+  }
+  return result
+};
+ca_vote.simulation.normalise = function normalise(n) {
+  if(n < 0) {
+    return n + ca_vote.simulation.cells
+  }else {
+    return cljs.core.rem.call(null, n, ca_vote.simulation.cells)
+  }
+};
+ca_vote.simulation.alive_QMARK_ = function alive_QMARK_(pos, grid) {
+  var current = grid[pos];
+  var deltas = cljs.core.not.call(null, current) ? cljs.core.PersistentVector.fromArray([0, -1, -3], true) : cljs.core.PersistentVector.fromArray([0, 1, 3], true);
+  var considered = cljs.core.map.call(null, function(current, deltas) {
+    return function(p1__5703_SHARP_) {
+      return cljs.core.nth.call(null, grid, ca_vote.simulation.normalise.call(null, pos + p1__5703_SHARP_))
+    }
+  }(current, deltas), deltas);
+  return cljs.core.count.call(null, cljs.core.filter.call(null, cljs.core.true_QMARK_, considered)) >= 2
+};
+ca_vote.simulation.step = function step(grid) {
+  var width = grid.length;
+  var next = new Array(width);
+  var seq__5708_5712 = cljs.core.seq.call(null, cljs.core.range.call(null, width));
+  var chunk__5709_5713 = null;
+  var count__5710_5714 = 0;
+  var i__5711_5715 = 0;
+  while(true) {
+    if(i__5711_5715 < count__5710_5714) {
+      var x_5716 = cljs.core._nth.call(null, chunk__5709_5713, i__5711_5715);
+      if(cljs.core.truth_(ca_vote.simulation.alive_QMARK_.call(null, x_5716, grid))) {
+        next[x_5716] = true
+      }else {
+        next[x_5716] = false
+      }
+      var G__5717 = seq__5708_5712;
+      var G__5718 = chunk__5709_5713;
+      var G__5719 = count__5710_5714;
+      var G__5720 = i__5711_5715 + 1;
+      seq__5708_5712 = G__5717;
+      chunk__5709_5713 = G__5718;
+      count__5710_5714 = G__5719;
+      i__5711_5715 = G__5720;
+      continue
+    }else {
+      var temp__4092__auto___5721 = cljs.core.seq.call(null, seq__5708_5712);
+      if(temp__4092__auto___5721) {
+        var seq__5708_5722__$1 = temp__4092__auto___5721;
+        if(cljs.core.chunked_seq_QMARK_.call(null, seq__5708_5722__$1)) {
+          var c__3073__auto___5723 = cljs.core.chunk_first.call(null, seq__5708_5722__$1);
+          var G__5724 = cljs.core.chunk_rest.call(null, seq__5708_5722__$1);
+          var G__5725 = c__3073__auto___5723;
+          var G__5726 = cljs.core.count.call(null, c__3073__auto___5723);
+          var G__5727 = 0;
+          seq__5708_5712 = G__5724;
+          chunk__5709_5713 = G__5725;
+          count__5710_5714 = G__5726;
+          i__5711_5715 = G__5727;
+          continue
+        }else {
+          var x_5728 = cljs.core.first.call(null, seq__5708_5722__$1);
+          if(cljs.core.truth_(ca_vote.simulation.alive_QMARK_.call(null, x_5728, grid))) {
+            next[x_5728] = true
+          }else {
+            next[x_5728] = false
+          }
+          var G__5729 = cljs.core.next.call(null, seq__5708_5722__$1);
+          var G__5730 = null;
+          var G__5731 = 0;
+          var G__5732 = 0;
+          seq__5708_5712 = G__5729;
+          chunk__5709_5713 = G__5730;
+          count__5710_5714 = G__5731;
+          i__5711_5715 = G__5732;
+          continue
+        }
+      }else {
+      }
+    }
+    break
+  }
+  return next
+};
+ca_vote.simulation.run_sim = function run_sim(init) {
+  var result = new Array(ca_vote.simulation.cells);
+  result[0] = init;
+  var seq__5737_5741 = cljs.core.seq.call(null, cljs.core.range.call(null, 1, ca_vote.simulation.cells));
+  var chunk__5738_5742 = null;
+  var count__5739_5743 = 0;
+  var i__5740_5744 = 0;
+  while(true) {
+    if(i__5740_5744 < count__5739_5743) {
+      var i_5745 = cljs.core._nth.call(null, chunk__5738_5742, i__5740_5744);
+      result[i_5745] = ca_vote.simulation.step.call(null, result[i_5745 - 1]);
+      var G__5746 = seq__5737_5741;
+      var G__5747 = chunk__5738_5742;
+      var G__5748 = count__5739_5743;
+      var G__5749 = i__5740_5744 + 1;
+      seq__5737_5741 = G__5746;
+      chunk__5738_5742 = G__5747;
+      count__5739_5743 = G__5748;
+      i__5740_5744 = G__5749;
+      continue
+    }else {
+      var temp__4092__auto___5750 = cljs.core.seq.call(null, seq__5737_5741);
+      if(temp__4092__auto___5750) {
+        var seq__5737_5751__$1 = temp__4092__auto___5750;
+        if(cljs.core.chunked_seq_QMARK_.call(null, seq__5737_5751__$1)) {
+          var c__3073__auto___5752 = cljs.core.chunk_first.call(null, seq__5737_5751__$1);
+          var G__5753 = cljs.core.chunk_rest.call(null, seq__5737_5751__$1);
+          var G__5754 = c__3073__auto___5752;
+          var G__5755 = cljs.core.count.call(null, c__3073__auto___5752);
+          var G__5756 = 0;
+          seq__5737_5741 = G__5753;
+          chunk__5738_5742 = G__5754;
+          count__5739_5743 = G__5755;
+          i__5740_5744 = G__5756;
+          continue
+        }else {
+          var i_5757 = cljs.core.first.call(null, seq__5737_5751__$1);
+          result[i_5757] = ca_vote.simulation.step.call(null, result[i_5757 - 1]);
+          var G__5758 = cljs.core.next.call(null, seq__5737_5751__$1);
+          var G__5759 = null;
+          var G__5760 = 0;
+          var G__5761 = 0;
+          seq__5737_5741 = G__5758;
+          chunk__5738_5742 = G__5759;
+          count__5739_5743 = G__5760;
+          i__5740_5744 = G__5761;
+          continue
+        }
+      }else {
+      }
+    }
+    break
+  }
+  return result
+};
 goog.provide("goog.disposable.IDisposable");
 goog.disposable.IDisposable = function() {
 };
@@ -32407,31 +32597,35 @@ clojure.browser.net.xpc_connection = function() {
 goog.provide("ca_vote.display");
 goog.require("cljs.core");
 goog.require("domina");
+goog.require("ca_vote.simulation");
 goog.require("clojure.string");
 goog.require("domina");
 ca_vote.display.now = function now() {
   return(new Date).getTime()
 };
 goog.exportSymbol("ca_vote.display.now", ca_vote.display.now);
-ca_vote.display.log = function() {
-  var log__delegate = function(message) {
+ca_vote.display.puts = function() {
+  var puts__delegate = function(message) {
     return console.log(clojure.string.join.call(null, " ", message))
   };
-  var log = function(var_args) {
+  var puts = function(var_args) {
     var message = null;
     if(arguments.length > 0) {
       message = cljs.core.array_seq(Array.prototype.slice.call(arguments, 0), 0)
     }
-    return log__delegate.call(this, message)
+    return puts__delegate.call(this, message)
   };
-  log.cljs$lang$maxFixedArity = 0;
-  log.cljs$lang$applyTo = function(arglist__8864) {
-    var message = cljs.core.seq(arglist__8864);
-    return log__delegate(message)
+  puts.cljs$lang$maxFixedArity = 0;
+  puts.cljs$lang$applyTo = function(arglist__15670) {
+    var message = cljs.core.seq(arglist__15670);
+    return puts__delegate(message)
   };
-  log.cljs$core$IFn$_invoke$arity$variadic = log__delegate;
-  return log
+  puts.cljs$core$IFn$_invoke$arity$variadic = puts__delegate;
+  return puts
 }();
+ca_vote.display.log = function log(object) {
+  return console.log(object)
+};
 ca_vote.display.line_colour = "#cdcdcd";
 ca_vote.display.background = "#eee";
 ca_vote.display.liveColor = "#666";
@@ -32440,23 +32634,6 @@ ca_vote.display.padding = 0;
 ca_vote.display.cells = 101;
 ca_vote.display.cell_size = cljs.core.atom.call(null, 0);
 ca_vote.display.p = 0.5;
-ca_vote.display.normalise = function normalise(n) {
-  if(n < 0) {
-    return n + ca_vote.display.cells
-  }else {
-    return cljs.core.rem.call(null, n, ca_vote.display.cells)
-  }
-};
-ca_vote.display.alive_QMARK_ = function alive_QMARK_(pos, grid) {
-  var current = cljs.core.get.call(null, grid, pos);
-  var deltas = cljs.core.not.call(null, current) ? cljs.core.PersistentVector.fromArray([0, -1, -3], true) : cljs.core.PersistentVector.fromArray([0, 1, 3], true);
-  var considered = cljs.core.map.call(null, function(current, deltas) {
-    return function(p1__8865_SHARP_) {
-      return cljs.core.nth.call(null, grid, ca_vote.display.normalise.call(null, pos + p1__8865_SHARP_))
-    }
-  }(current, deltas), deltas);
-  return cljs.core.count.call(null, cljs.core.filter.call(null, cljs.core.true_QMARK_, considered)) >= 2
-};
 ca_vote.display.fill_sq = function fill_sq(x, y, colour, context) {
   context.fillStyle = colour;
   context.strokeStyle = colour;
@@ -32469,142 +32646,70 @@ ca_vote.display.alive = function alive(x, y, context) {
 ca_vote.display.dead = function dead(x, y, context) {
   return ca_vote.display.fill_sq.call(null, x, y, ca_vote.display.deadColor, context)
 };
-ca_vote.display.draw = function draw() {
+ca_vote.display.draw_grid = function draw_grid(grid) {
   var board = domina.by_id.call(null, "voting");
   var context = board.getContext("2d");
   var width = board.width;
   var height = board.height;
-  var grid = cljs.core.atom.call(null, cljs.core.vec.call(null, cljs.core.take.call(null, ca_vote.display.cells, cljs.core.repeatedly.call(null, function(board, context, width, height) {
-    return function() {
-      return cljs.core.vec.call(null, cljs.core.take.call(null, ca_vote.display.cells, cljs.core.repeat.call(null, null)))
-    }
-  }(board, context, width, height)))));
   cljs.core.reset_BANG_.call(null, ca_vote.display.cell_size, (width - 2 * ca_vote.display.padding) / ca_vote.display.cells);
-  var seq__8882_8898 = cljs.core.seq.call(null, cljs.core.range.call(null, ca_vote.display.cells));
-  var chunk__8883_8899 = null;
-  var count__8884_8900 = 0;
-  var i__8885_8901 = 0;
+  var seq__15683 = cljs.core.seq.call(null, cljs.core.range.call(null, ca_vote.display.cells));
+  var chunk__15688 = null;
+  var count__15689 = 0;
+  var i__15690 = 0;
   while(true) {
-    if(i__8885_8901 < count__8884_8900) {
-      var x_8902 = cljs.core._nth.call(null, chunk__8883_8899, i__8885_8901);
-      if(cljs.core.rand.call(null) > ca_vote.display.p) {
-        ca_vote.display.alive.call(null, x_8902, 0, context);
-        cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([0, x_8902], true), true)
-      }else {
-        ca_vote.display.dead.call(null, x_8902, 0, context);
-        cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([0, x_8902], true), false)
-      }
-      var G__8903 = seq__8882_8898;
-      var G__8904 = chunk__8883_8899;
-      var G__8905 = count__8884_8900;
-      var G__8906 = i__8885_8901 + 1;
-      seq__8882_8898 = G__8903;
-      chunk__8883_8899 = G__8904;
-      count__8884_8900 = G__8905;
-      i__8885_8901 = G__8906;
-      continue
-    }else {
-      var temp__4092__auto___8907 = cljs.core.seq.call(null, seq__8882_8898);
-      if(temp__4092__auto___8907) {
-        var seq__8882_8908__$1 = temp__4092__auto___8907;
-        if(cljs.core.chunked_seq_QMARK_.call(null, seq__8882_8908__$1)) {
-          var c__3073__auto___8909 = cljs.core.chunk_first.call(null, seq__8882_8908__$1);
-          var G__8910 = cljs.core.chunk_rest.call(null, seq__8882_8908__$1);
-          var G__8911 = c__3073__auto___8909;
-          var G__8912 = cljs.core.count.call(null, c__3073__auto___8909);
-          var G__8913 = 0;
-          seq__8882_8898 = G__8910;
-          chunk__8883_8899 = G__8911;
-          count__8884_8900 = G__8912;
-          i__8885_8901 = G__8913;
-          continue
-        }else {
-          var x_8914 = cljs.core.first.call(null, seq__8882_8908__$1);
-          if(cljs.core.rand.call(null) > ca_vote.display.p) {
-            ca_vote.display.alive.call(null, x_8914, 0, context);
-            cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([0, x_8914], true), true)
-          }else {
-            ca_vote.display.dead.call(null, x_8914, 0, context);
-            cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([0, x_8914], true), false)
-          }
-          var G__8915 = cljs.core.next.call(null, seq__8882_8908__$1);
-          var G__8916 = null;
-          var G__8917 = 0;
-          var G__8918 = 0;
-          seq__8882_8898 = G__8915;
-          chunk__8883_8899 = G__8916;
-          count__8884_8900 = G__8917;
-          i__8885_8901 = G__8918;
-          continue
-        }
-      }else {
-      }
-    }
-    break
-  }
-  var seq__8886 = cljs.core.seq.call(null, cljs.core.range.call(null, 1, ca_vote.display.cells));
-  var chunk__8887 = null;
-  var count__8888 = 0;
-  var i__8889 = 0;
-  while(true) {
-    if(i__8889 < count__8888) {
-      var y = cljs.core._nth.call(null, chunk__8887, i__8889);
-      ca_vote.display.log.call(null, y);
-      var seq__8890_8919 = cljs.core.seq.call(null, cljs.core.range.call(null, ca_vote.display.cells));
-      var chunk__8891_8920 = null;
-      var count__8892_8921 = 0;
-      var i__8893_8922 = 0;
+    if(i__15690 < count__15689) {
+      var x = cljs.core._nth.call(null, chunk__15688, i__15690);
+      var seq__15691_15695 = cljs.core.seq.call(null, cljs.core.range.call(null, ca_vote.display.cells));
+      var chunk__15692_15696 = null;
+      var count__15693_15697 = 0;
+      var i__15694_15698 = 0;
       while(true) {
-        if(i__8893_8922 < count__8892_8921) {
-          var x_8923 = cljs.core._nth.call(null, chunk__8891_8920, i__8893_8922);
-          if(cljs.core.truth_(ca_vote.display.alive_QMARK_.call(null, x_8923, cljs.core.nth.call(null, cljs.core.deref.call(null, grid), y - 1)))) {
-            cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([y, x_8923], true), true);
-            ca_vote.display.alive.call(null, x_8923, y, context)
+        if(i__15694_15698 < count__15693_15697) {
+          var y_15699 = cljs.core._nth.call(null, chunk__15692_15696, i__15694_15698);
+          if(cljs.core.truth_(grid[y_15699][x])) {
+            ca_vote.display.alive.call(null, x, y_15699, context)
           }else {
-            cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([y, x_8923], true), false);
-            ca_vote.display.dead.call(null, x_8923, y, context)
+            ca_vote.display.dead.call(null, x, y_15699, context)
           }
-          var G__8924 = seq__8890_8919;
-          var G__8925 = chunk__8891_8920;
-          var G__8926 = count__8892_8921;
-          var G__8927 = i__8893_8922 + 1;
-          seq__8890_8919 = G__8924;
-          chunk__8891_8920 = G__8925;
-          count__8892_8921 = G__8926;
-          i__8893_8922 = G__8927;
+          var G__15700 = seq__15691_15695;
+          var G__15701 = chunk__15692_15696;
+          var G__15702 = count__15693_15697;
+          var G__15703 = i__15694_15698 + 1;
+          seq__15691_15695 = G__15700;
+          chunk__15692_15696 = G__15701;
+          count__15693_15697 = G__15702;
+          i__15694_15698 = G__15703;
           continue
         }else {
-          var temp__4092__auto___8928 = cljs.core.seq.call(null, seq__8890_8919);
-          if(temp__4092__auto___8928) {
-            var seq__8890_8929__$1 = temp__4092__auto___8928;
-            if(cljs.core.chunked_seq_QMARK_.call(null, seq__8890_8929__$1)) {
-              var c__3073__auto___8930 = cljs.core.chunk_first.call(null, seq__8890_8929__$1);
-              var G__8931 = cljs.core.chunk_rest.call(null, seq__8890_8929__$1);
-              var G__8932 = c__3073__auto___8930;
-              var G__8933 = cljs.core.count.call(null, c__3073__auto___8930);
-              var G__8934 = 0;
-              seq__8890_8919 = G__8931;
-              chunk__8891_8920 = G__8932;
-              count__8892_8921 = G__8933;
-              i__8893_8922 = G__8934;
+          var temp__4092__auto___15704 = cljs.core.seq.call(null, seq__15691_15695);
+          if(temp__4092__auto___15704) {
+            var seq__15691_15705__$1 = temp__4092__auto___15704;
+            if(cljs.core.chunked_seq_QMARK_.call(null, seq__15691_15705__$1)) {
+              var c__3073__auto___15706 = cljs.core.chunk_first.call(null, seq__15691_15705__$1);
+              var G__15707 = cljs.core.chunk_rest.call(null, seq__15691_15705__$1);
+              var G__15708 = c__3073__auto___15706;
+              var G__15709 = cljs.core.count.call(null, c__3073__auto___15706);
+              var G__15710 = 0;
+              seq__15691_15695 = G__15707;
+              chunk__15692_15696 = G__15708;
+              count__15693_15697 = G__15709;
+              i__15694_15698 = G__15710;
               continue
             }else {
-              var x_8935 = cljs.core.first.call(null, seq__8890_8929__$1);
-              if(cljs.core.truth_(ca_vote.display.alive_QMARK_.call(null, x_8935, cljs.core.nth.call(null, cljs.core.deref.call(null, grid), y - 1)))) {
-                cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([y, x_8935], true), true);
-                ca_vote.display.alive.call(null, x_8935, y, context)
+              var y_15711 = cljs.core.first.call(null, seq__15691_15705__$1);
+              if(cljs.core.truth_(grid[y_15711][x])) {
+                ca_vote.display.alive.call(null, x, y_15711, context)
               }else {
-                cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([y, x_8935], true), false);
-                ca_vote.display.dead.call(null, x_8935, y, context)
+                ca_vote.display.dead.call(null, x, y_15711, context)
               }
-              var G__8936 = cljs.core.next.call(null, seq__8890_8929__$1);
-              var G__8937 = null;
-              var G__8938 = 0;
-              var G__8939 = 0;
-              seq__8890_8919 = G__8936;
-              chunk__8891_8920 = G__8937;
-              count__8892_8921 = G__8938;
-              i__8893_8922 = G__8939;
+              var G__15712 = cljs.core.next.call(null, seq__15691_15705__$1);
+              var G__15713 = null;
+              var G__15714 = 0;
+              var G__15715 = 0;
+              seq__15691_15695 = G__15712;
+              chunk__15692_15696 = G__15713;
+              count__15693_15697 = G__15714;
+              i__15694_15698 = G__15715;
               continue
             }
           }else {
@@ -32612,88 +32717,83 @@ ca_vote.display.draw = function draw() {
         }
         break
       }
-      var G__8940 = seq__8886;
-      var G__8941 = chunk__8887;
-      var G__8942 = count__8888;
-      var G__8943 = i__8889 + 1;
-      seq__8886 = G__8940;
-      chunk__8887 = G__8941;
-      count__8888 = G__8942;
-      i__8889 = G__8943;
+      var G__15716 = seq__15683;
+      var G__15717 = chunk__15688;
+      var G__15718 = count__15689;
+      var G__15719 = i__15690 + 1;
+      seq__15683 = G__15716;
+      chunk__15688 = G__15717;
+      count__15689 = G__15718;
+      i__15690 = G__15719;
       continue
     }else {
-      var temp__4092__auto__ = cljs.core.seq.call(null, seq__8886);
+      var temp__4092__auto__ = cljs.core.seq.call(null, seq__15683);
       if(temp__4092__auto__) {
-        var seq__8886__$1 = temp__4092__auto__;
-        if(cljs.core.chunked_seq_QMARK_.call(null, seq__8886__$1)) {
-          var c__3073__auto__ = cljs.core.chunk_first.call(null, seq__8886__$1);
-          var G__8944 = cljs.core.chunk_rest.call(null, seq__8886__$1);
-          var G__8945 = c__3073__auto__;
-          var G__8946 = cljs.core.count.call(null, c__3073__auto__);
-          var G__8947 = 0;
-          seq__8886 = G__8944;
-          chunk__8887 = G__8945;
-          count__8888 = G__8946;
-          i__8889 = G__8947;
+        var seq__15683__$1 = temp__4092__auto__;
+        if(cljs.core.chunked_seq_QMARK_.call(null, seq__15683__$1)) {
+          var c__3073__auto__ = cljs.core.chunk_first.call(null, seq__15683__$1);
+          var G__15720 = cljs.core.chunk_rest.call(null, seq__15683__$1);
+          var G__15721 = c__3073__auto__;
+          var G__15722 = cljs.core.count.call(null, c__3073__auto__);
+          var G__15723 = 0;
+          seq__15683 = G__15720;
+          chunk__15688 = G__15721;
+          count__15689 = G__15722;
+          i__15690 = G__15723;
           continue
         }else {
-          var y = cljs.core.first.call(null, seq__8886__$1);
-          ca_vote.display.log.call(null, y);
-          var seq__8894_8948 = cljs.core.seq.call(null, cljs.core.range.call(null, ca_vote.display.cells));
-          var chunk__8895_8949 = null;
-          var count__8896_8950 = 0;
-          var i__8897_8951 = 0;
+          var x = cljs.core.first.call(null, seq__15683__$1);
+          var seq__15684_15724 = cljs.core.seq.call(null, cljs.core.range.call(null, ca_vote.display.cells));
+          var chunk__15685_15725 = null;
+          var count__15686_15726 = 0;
+          var i__15687_15727 = 0;
           while(true) {
-            if(i__8897_8951 < count__8896_8950) {
-              var x_8952 = cljs.core._nth.call(null, chunk__8895_8949, i__8897_8951);
-              if(cljs.core.truth_(ca_vote.display.alive_QMARK_.call(null, x_8952, cljs.core.nth.call(null, cljs.core.deref.call(null, grid), y - 1)))) {
-                cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([y, x_8952], true), true);
-                ca_vote.display.alive.call(null, x_8952, y, context)
+            if(i__15687_15727 < count__15686_15726) {
+              var y_15728 = cljs.core._nth.call(null, chunk__15685_15725, i__15687_15727);
+              if(cljs.core.truth_(grid[y_15728][x])) {
+                ca_vote.display.alive.call(null, x, y_15728, context)
               }else {
-                cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([y, x_8952], true), false);
-                ca_vote.display.dead.call(null, x_8952, y, context)
+                ca_vote.display.dead.call(null, x, y_15728, context)
               }
-              var G__8953 = seq__8894_8948;
-              var G__8954 = chunk__8895_8949;
-              var G__8955 = count__8896_8950;
-              var G__8956 = i__8897_8951 + 1;
-              seq__8894_8948 = G__8953;
-              chunk__8895_8949 = G__8954;
-              count__8896_8950 = G__8955;
-              i__8897_8951 = G__8956;
+              var G__15729 = seq__15684_15724;
+              var G__15730 = chunk__15685_15725;
+              var G__15731 = count__15686_15726;
+              var G__15732 = i__15687_15727 + 1;
+              seq__15684_15724 = G__15729;
+              chunk__15685_15725 = G__15730;
+              count__15686_15726 = G__15731;
+              i__15687_15727 = G__15732;
               continue
             }else {
-              var temp__4092__auto___8957__$1 = cljs.core.seq.call(null, seq__8894_8948);
-              if(temp__4092__auto___8957__$1) {
-                var seq__8894_8958__$1 = temp__4092__auto___8957__$1;
-                if(cljs.core.chunked_seq_QMARK_.call(null, seq__8894_8958__$1)) {
-                  var c__3073__auto___8959 = cljs.core.chunk_first.call(null, seq__8894_8958__$1);
-                  var G__8960 = cljs.core.chunk_rest.call(null, seq__8894_8958__$1);
-                  var G__8961 = c__3073__auto___8959;
-                  var G__8962 = cljs.core.count.call(null, c__3073__auto___8959);
-                  var G__8963 = 0;
-                  seq__8894_8948 = G__8960;
-                  chunk__8895_8949 = G__8961;
-                  count__8896_8950 = G__8962;
-                  i__8897_8951 = G__8963;
+              var temp__4092__auto___15733__$1 = cljs.core.seq.call(null, seq__15684_15724);
+              if(temp__4092__auto___15733__$1) {
+                var seq__15684_15734__$1 = temp__4092__auto___15733__$1;
+                if(cljs.core.chunked_seq_QMARK_.call(null, seq__15684_15734__$1)) {
+                  var c__3073__auto___15735 = cljs.core.chunk_first.call(null, seq__15684_15734__$1);
+                  var G__15736 = cljs.core.chunk_rest.call(null, seq__15684_15734__$1);
+                  var G__15737 = c__3073__auto___15735;
+                  var G__15738 = cljs.core.count.call(null, c__3073__auto___15735);
+                  var G__15739 = 0;
+                  seq__15684_15724 = G__15736;
+                  chunk__15685_15725 = G__15737;
+                  count__15686_15726 = G__15738;
+                  i__15687_15727 = G__15739;
                   continue
                 }else {
-                  var x_8964 = cljs.core.first.call(null, seq__8894_8958__$1);
-                  if(cljs.core.truth_(ca_vote.display.alive_QMARK_.call(null, x_8964, cljs.core.nth.call(null, cljs.core.deref.call(null, grid), y - 1)))) {
-                    cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([y, x_8964], true), true);
-                    ca_vote.display.alive.call(null, x_8964, y, context)
+                  var y_15740 = cljs.core.first.call(null, seq__15684_15734__$1);
+                  if(cljs.core.truth_(grid[y_15740][x])) {
+                    ca_vote.display.alive.call(null, x, y_15740, context)
                   }else {
-                    cljs.core.swap_BANG_.call(null, grid, cljs.core.assoc_in, cljs.core.PersistentVector.fromArray([y, x_8964], true), false);
-                    ca_vote.display.dead.call(null, x_8964, y, context)
+                    ca_vote.display.dead.call(null, x, y_15740, context)
                   }
-                  var G__8965 = cljs.core.next.call(null, seq__8894_8958__$1);
-                  var G__8966 = null;
-                  var G__8967 = 0;
-                  var G__8968 = 0;
-                  seq__8894_8948 = G__8965;
-                  chunk__8895_8949 = G__8966;
-                  count__8896_8950 = G__8967;
-                  i__8897_8951 = G__8968;
+                  var G__15741 = cljs.core.next.call(null, seq__15684_15734__$1);
+                  var G__15742 = null;
+                  var G__15743 = 0;
+                  var G__15744 = 0;
+                  seq__15684_15724 = G__15741;
+                  chunk__15685_15725 = G__15742;
+                  count__15686_15726 = G__15743;
+                  i__15687_15727 = G__15744;
                   continue
                 }
               }else {
@@ -32701,14 +32801,14 @@ ca_vote.display.draw = function draw() {
             }
             break
           }
-          var G__8969 = cljs.core.next.call(null, seq__8886__$1);
-          var G__8970 = null;
-          var G__8971 = 0;
-          var G__8972 = 0;
-          seq__8886 = G__8969;
-          chunk__8887 = G__8970;
-          count__8888 = G__8971;
-          i__8889 = G__8972;
+          var G__15745 = cljs.core.next.call(null, seq__15683__$1);
+          var G__15746 = null;
+          var G__15747 = 0;
+          var G__15748 = 0;
+          seq__15683 = G__15745;
+          chunk__15688 = G__15746;
+          count__15689 = G__15747;
+          i__15690 = G__15748;
           continue
         }
       }else {
@@ -32717,6 +32817,19 @@ ca_vote.display.draw = function draw() {
     }
     break
   }
+};
+goog.exportSymbol("ca_vote.display.draw_grid", ca_vote.display.draw_grid);
+ca_vote.display.trace = function trace(f) {
+  var start = ca_vote.display.now.call(null);
+  f.call(null);
+  return ca_vote.display.puts.call(null, "took", ca_vote.display.now.call(null) - start)
+};
+ca_vote.display.draw = function draw() {
+  ca_vote.display.log.call(null, cljs.core.count.call(null, ca_vote.simulation.random_grid.call(null)));
+  var init = ca_vote.simulation.random_grid.call(null);
+  return ca_vote.display.trace.call(null, function() {
+    return ca_vote.display.draw_grid.call(null, ca_vote.simulation.run_sim.call(null, init))
+  })
 };
 goog.exportSymbol("ca_vote.display.draw", ca_vote.display.draw);
 goog.provide("clojure.browser.repl");
@@ -32823,9 +32936,3 @@ clojure.browser.repl.connect = function connect(repl_server_url) {
 goog.provide("ca_vote.connect");
 goog.require("cljs.core");
 goog.require("clojure.browser.repl");
-goog.provide("ca_vote.simulation");
-goog.require("cljs.core");
-ca_vote.simulation.genome_size = Math.pow(2, 7);
-ca_vote.simulation.gen_array = function gen_array() {
-  return new Array(ca_vote.simulation.genome_size)
-};

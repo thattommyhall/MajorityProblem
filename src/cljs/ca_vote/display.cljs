@@ -1,35 +1,25 @@
 (ns ca-vote.display
   (:use [domina :only [by-id value]])
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [ca-vote.simulation :as sim]))
 
 (defn ^:export now []
   (.getTime (js/Date.)))
 
-(defn log [& message]
+(defn puts [& message]
   (.log js/console (string/join " " message)))
+
+(defn log [object]
+  (.log js/console object))
 
 (def line_colour "#cdcdcd")
 (def background "#eee")
 (def liveColor "#666")
 (def deadColor "#eee")
-(def padding 0)
+(def padding 0) 
 (def cells 101)
 (def cell_size (atom 0))
 (def p 0.5)
-
-(defn normalise [n]
-  (if (< n 0)
-    (+ n cells)
-    (rem n cells)))
-
-(defn alive? [pos grid]
-  (let [current (get grid pos)
-        deltas (if-not current
-                 [0 -1 -3]
-                 [0 1 3])
-        considered (map #(nth grid (normalise (+ pos %))) deltas)]
-    (>= (count (filter true? considered))
-        2)))
 
 (defn fill_sq [x y colour context]
   (set! (.-fillStyle context) colour)
@@ -51,28 +41,37 @@
 (defn dead [x y context]
   (fill_sq x y deadColor context))
 
-(defn ^:export draw []
+(defn ^:export draw-grid [grid]
   (let [board (by-id "voting")
         context (.getContext board "2d")
         width (.-width board)
         height (.-height board)
-        grid (atom (vec (take cells (repeatedly #(vec (take cells (repeat nil)))))))
         ]
     (reset! cell_size (/ (- width (* 2 padding))
                          cells))
-    (doseq [x (range cells)]
-      (if (> (rand) p)
-        (do (alive x 0 context)
-            (swap! grid assoc-in [0 x] true))
-        (do (dead x 0 context)
-            (swap! grid assoc-in [0 x] false))))
-    (doseq [y (range 1 cells)]
-      (log y)
-      (doseq [x (range cells)]
+    (doseq [x (range cells)
+            y (range cells)]
+      (if (aget (aget grid y) x)
+        (alive x y context)
+        (dead x y context)))))
 
-        (if (alive? x (nth @grid (dec y)))
-          (do (swap! grid assoc-in [y x] true)
-              (alive x y context))
-          (do (swap! grid assoc-in [y x] false)       
-              (dead x y context)))))))
-    
+(defn trace [f]
+  (let [start (now)]
+    (f)
+  
+    (puts "took" (- (now) start))
+    ))
+
+(defn ^:export draw []
+  (log (count (sim/random-grid)))
+  (let [init (sim/random-grid)]
+
+    ;; (time #(sim/run-sim init))
+    ;; (time #
+    (trace (fn []
+            (draw-grid (sim/run-sim init))))
+
+    )
+  
+)
+      

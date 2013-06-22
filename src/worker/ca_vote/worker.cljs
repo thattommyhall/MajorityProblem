@@ -1,2 +1,1 @@
 (ns ca-vote.worker)
-
