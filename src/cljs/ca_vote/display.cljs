@@ -1,16 +1,9 @@
 (ns ca-vote.display
-  (:use [domina :only [by-id value]])
+  (:use [domina :only [by-id value]]
+        [ca-vote.utils :only [log puts now]])
   (:require [clojure.string :as string]
-            [ca-vote.simulation :as sim]))
-
-(defn ^:export now []
-  (.getTime (js/Date.)))
-
-(defn puts [& message]
-  (.log js/console (string/join " " message)))
-
-(defn log [object]
-  (.log js/console object))
+            [ca-vote.simulation :as sim]
+            ))
 
 (def line_colour "#cdcdcd")
 (def background "#eee")
@@ -66,12 +59,9 @@
   (log (count (sim/random-grid)))
   (let [init (sim/random-grid)]
 
-    ;; (time #(sim/run-sim init))
-    ;; (time #
-    (trace (fn []
-            (draw-grid (sim/run-sim init))))
+    (trace #(sim/run-sim init))
 
-    )
-  
-)
+    (trace (fn []
+            (draw-grid (sim/run-sim init))))))
       
+  

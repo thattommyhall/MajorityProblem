@@ -31,6 +31,8 @@
         (aset next x false)))
     next))
 
+
+
 (defn run-sim [init]
   (let [result (make-array cells)]
     (aset result 0 init)
@@ -41,5 +43,8 @@
 
   
   
+
+
+
   
 
