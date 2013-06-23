@@ -1,9 +1,11 @@
 (ns ca-vote.display
-  (:use [domina :only [by-id value]]
-        [ca-vote.utils :only [log puts now]])
+  (:use [domina :only [by-id]]
+        [ca-vote.utils :only [log puts now trace]])
   (:require [clojure.string :as string]
             [ca-vote.simulation :as sim]
-            ))
+            [ca-vote.simulationold :as simold]
+            )
+  (:use-macros [ca-vote.macros :only [forloop local << >>] ]))
 
 (def line_colour "#cdcdcd")
 (def background "#eee")
@@ -34,7 +36,7 @@
 (defn dead [x y context]
   (fill_sq x y deadColor context))
 
-(defn ^:export draw-grid [grid]
+(defn draw-grid [grid]
   (let [board (by-id "voting")
         context (.getContext board "2d")
         width (.-width board)
@@ -48,20 +50,34 @@
         (alive x y context)
         (dead x y context)))))
 
-(defn trace [f]
-  (let [start (now)]
-    (f)
-  
-    (puts "took" (- (now) start))
-    ))
+(defn draw-grid-new [grid]
+  (let [board (.getElementById js/document "voting")
+        context (.getContext board "2d")
+        width (.-width board)
+        height (.-height board)
+        ]
+    (reset! cell_size (/ (- width (* 2 padding))
+                         cells))
+    (forloop [(x 0) (< x cells) (inc x)]
+             (forloop [(y 0) (< y cells) (inc y)]
+                      (if (aget (aget grid y) x)
+                        (alive x y context)
+                        (dead x y context))))))
+
 
 (defn ^:export draw []
   (log (count (sim/random-grid)))
   (let [init (sim/random-grid)]
 
-    (trace #(sim/run-sim init))
+    (dotimes [_ 5]
+      (trace #(simold/run-sim init)))
+    (dotimes [_ 5]
+      (trace #(sim/run-sim init)))
 
-    (trace (fn []
-            (draw-grid (sim/run-sim init))))))
+    (dotimes [_ 5]
+      (trace #(draw-grid (simold/run-sim init))))
+    (dotimes [_ 5]
+      (trace #(draw-grid-new (sim/run-sim init))))
+))
       
   

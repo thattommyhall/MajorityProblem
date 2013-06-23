@@ -9,3 +9,10 @@
 
 (defn log [object]
   (.log js/console object))
+
+(defn trace [f]
+  (let [start (now)]
+    (f)
+  
+    (puts "took" (- (now) start))
+    ))

@@ -6,10 +6,12 @@
             [compojure.route :as route]))
 
 (defn for-env [env]
+  (let [onload (str "ca_vote.display.draw();" (if (= env "dev")
+                                                "ca_vote.connect.start_repl()"))]
   (html [:head {:title env}                           
          [:script {:src (str "js/" env ".js")}]
-         [:body {:onload "ca_vote.display.draw()"}]
-         [:canvas#voting {:width "800" :height "800"}]]))  
+         [:body {:onload onload}]
+         [:canvas#voting {:width "800" :height "800"}]])))  
 
 (defroutes app-routes
   (GET "/:env" [env]

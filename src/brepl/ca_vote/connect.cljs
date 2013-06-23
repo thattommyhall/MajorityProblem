@@ -1,5 +1,6 @@
 (ns ca-vote.connect
   (:require [clojure.browser.repl :as repl]))
 
-(repl/connect "http://localhost:9000/repl")
+(defn ^:export start-repl []
+  (repl/connect "http://localhost:9000/repl"))
 
