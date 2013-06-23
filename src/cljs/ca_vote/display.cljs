@@ -69,15 +69,10 @@
   (log (count (sim/random-grid)))
   (let [init (sim/random-grid)]
 
-    (dotimes [_ 5]
-      (trace #(simold/run-sim init)))
+
+    ;; (trace #(simold/run-sim init))
     (dotimes [_ 5]
       (trace #(sim/run-sim init)))
-
-    (dotimes [_ 5]
-      (trace #(draw-grid (simold/run-sim init))))
-    (dotimes [_ 5]
-      (trace #(draw-grid-new (sim/run-sim init))))
-))
-      
-  
+    ;; (trace #(draw-grid (simold/run-sim init)))
+    (trace #(draw-grid-new (sim/run-sim init)))
+    ))
