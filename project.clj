@@ -10,12 +10,15 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [compojure "1.1.5"]
                  [hiccup "1.0.3"]
-                 [domina "1.0.2-SNAPSHOT"]]
+                 [domina "1.0.2-SNAPSHOT"]
+                 [shoreleave/shoreleave-remote-ring "0.3.0"]
+                 [shoreleave/shoreleave-remote "0.3.0"]
+                 ]
 
   :plugins [[lein-cljsbuild "0.3.2"]
             [lein-ring "0.8.5"]]
 
-  :ring {:handler ca-vote.core/handler}
+  :ring {:handler ca-vote.core/app}
 
   :cljsbuild {:builds {
                        :dev

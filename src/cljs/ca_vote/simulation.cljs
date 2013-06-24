@@ -4,6 +4,23 @@
 
 (def cells 101)
 
+(defn count-live [row]
+  (let [count (local 0)]
+    (forloop [(i 0) (< i (.-length row)) (inc i)]
+             (if (aget row i)
+               (>> count (inc (<< count)))))
+    (<< count)))
+
+(defn success? [grid]
+  (let [l (.-length grid)
+        first (aget grid 0)
+        last (aget grid (dec l))
+        first-count (count-live first)
+        last-count (count-live last)]
+    (if (< first-count (/ l 2))
+      (= 0 last-count)
+      (= l last-count))))
+
 (defn random-grid []
   (let [result (make-array cells)
         ]
@@ -30,8 +47,7 @@
              0))
         2)))
 
-(defn gkl []
-  
+(def gkl
   (let [g (make-array 128)]
     (doseq [l3 [0 1]
             l2 [0 1]
@@ -54,11 +70,6 @@
               (>= (+ c l1 l3) 2) 
               )))
     g))
-  
-
-(log (gkl))
-                  
-            
 
 (defn strategy-from-genome [genome]
   (fn [pos grid]
@@ -86,9 +97,10 @@
                (aset next x false)))
     next))
 
-(defn run-sim [init]
+(defn run-sim [genome]
   (let [result (make-array cells)
-        strategy (strategy-from-genome (gkl))
+        strategy (strategy-from-genome genome)
+        init (random-grid)
         ]
     (aset result 0 init)
     (forloop [(i 1) (< i cells) (inc i)]

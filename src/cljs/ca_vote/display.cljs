@@ -4,14 +4,16 @@
   (:require [clojure.string :as string]
             [ca-vote.simulation :as sim]
             [ca-vote.simulationold :as simold]
+            [shoreleave.remotes.http-rpc :refer [remote-callback]]
             )
+  (:require-macros [shoreleave.remotes.macros :as macros])
   (:use-macros [ca-vote.macros :only [forloop local << >>] ]))
 
 (def line_colour "#cdcdcd")
 (def background "#eee")
 (def liveColor "#666")
 (def deadColor "#eee")
-(def padding 0) 
+(def padding 0)
 (def cells 101)
 (def cell_size (atom 0))
 (def p 0.5)
@@ -65,14 +67,28 @@
                         (dead x y context))))))
 
 
+(defn draw-loop []
+  
+  ;; (dotimes [_ 5]
+  ;;   (trace #(sim/run-sim sim/gkl)))
+  ;; (dotimes [_ 5]
+  ;;   (trace #(draw-grid (sim/run-sim sim/gkl))))
+  (trace #(draw-grid-new (sim/run-sim sim/gkl)))
+  (remote-callback :send-results
+                   [{:s 2}]
+                   (fn [n]
+                     (log "did stuff")
+                     n))
+  ;; (js/setTimeout #(draw-loop) 1)
+  )
+
 (defn ^:export draw []
-  (log (count (sim/random-grid)))
-  (let [init (sim/random-grid)]
+  (let [test (sim/run-sim sim/gkl)]
+    (draw-loop)
+    
+    ;; (draw-grid-new test)
+    ;; (log (sim/count-live (aget test 0)))
+    ;; (log (sim/count-live (aget test 100)))
+    ;; (log (sim/success? test))
+  ))
 
-
-    ;; (trace #(simold/run-sim init))
-    (dotimes [_ 5]
-      (trace #(sim/run-sim init)))
-    ;; (trace #(draw-grid (simold/run-sim init)))
-    (trace #(draw-grid-new (sim/run-sim init)))
-    ))
