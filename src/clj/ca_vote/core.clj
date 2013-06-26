@@ -22,6 +22,8 @@
             ]]
           )))
 
+(def size 128)
+
 (declare merge-results)
   
 (defroutes app-routes
@@ -39,13 +41,34 @@
              (wrap-rpc)
              (handler/site)))
 
-(def population (agent {}))
+(defn random-genome []
+  (doall (for [_ (range size)]
+           (if (> (rand) 0.5)
+             true
+             false))))
+
+
+(def population (agent (apply sorted-map (interleave (take 100 (repeatedly #(/ (rand 1000))))
+                                                     (repeatedly random-genome)))))
 
 (defremote send-results [results]
   (send population merge results)
-  nil
-  )
+  nil)
 
-(defremote get-samples []
-  (for [i (range 100)]
-    (get @population i)))
+(defn take-until-sum 
+  ([map total] (take-until-sum map total 0))
+  ([map total so-far]
+     (if (< (+ so-far (ffirst map)) total)
+       (recur (rest map) total (+ so-far (ffirst map)))
+       (second (first map)))))
+     
+(defn sample [population total]
+  (let [position (rand total)]
+    (take-until-sum population position)))
+    
+(defremote get-sample [n]
+  (let [population @population
+        total (reduce + (keys population))]
+    (doall (for [_ (range n)]
+             (sample population total)))))
+
