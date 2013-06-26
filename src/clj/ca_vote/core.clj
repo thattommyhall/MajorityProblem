@@ -42,7 +42,10 @@
 (def population (agent {}))
 
 (defremote send-results [results]
-  (send population merge results))
+  (send population merge results)
+  nil
+  )
 
 (defremote get-samples []
-  @population)
+  (for [i (range 100)]
+    (get @population i)))

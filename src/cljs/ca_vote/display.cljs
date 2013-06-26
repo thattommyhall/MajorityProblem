@@ -67,6 +67,21 @@
                         (dead x y context))))))
 
 
+
+(defn send [results]
+  (puts "sending" results)
+  (remote-callback :send-results
+                   [results]
+                   (fn [n]
+                     (puts "sent: " results ", got: " n))
+                   ))
+
+(defn get-samples []
+  (remote-callback :get-samples
+                   []
+                   (fn [s]
+                     (puts s))))
+
 (defn draw-loop []
   
   ;; (dotimes [_ 5]
@@ -74,11 +89,10 @@
   ;; (dotimes [_ 5]
   ;;   (trace #(draw-grid (sim/run-sim sim/gkl))))
   (trace #(draw-grid-new (sim/run-sim sim/gkl)))
-  (remote-callback :send-results
-                   [{:s 2}]
-                   (fn [n]
-                     (log "did stuff")
-                     n))
+  (puts (send {:a 4 :b 5}))
+  (puts (send {:b 7 :d 2}))
+  (puts (send {}))
+  (get-samples)
   ;; (js/setTimeout #(draw-loop) 1)
   )
 
