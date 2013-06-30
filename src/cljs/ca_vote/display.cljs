@@ -86,26 +86,15 @@
   (js/Worker. "js/worker.js"))
 
 (defn ^:export draw []
-  (let [population (make-array 200)
-        worker (start-worker)
-        ]
-    ;; (start-worker)
-    ;; (.postMessage worker "start")
-    (.addEventListener worker 
-                       "message" 
-                       (fn [e]
-                          (log (.-data e))))
-
-    (draw-loop)
-    (trace #(log (sim/fitness sim/gkl)))
-    (GET "/sample" (fn [sample]
-                     (.concat population (.parse js/JSON sample))
-                     (js/setTimeout #(log population) 2000)
-                     (log population)))
-
-    ;; (draw-grid-new test)
-    ;; (log (sim/count-live (aget test 0)))
-    ;; (log (sim/count-live (aget test 100)))
-    ;; (log (sim/success? test))
-  ))
+  (dotimes [_ 4]
+    (let [worker (start-worker)]
+      (.addEventListener worker 
+                         "message" 
+                         (fn [e]
+                           (puts "wk: " (.-data e))))))
+  
+  
+  (draw-loop)
+  (trace #(log (sim/fitness sim/gkl)))
+  )
 

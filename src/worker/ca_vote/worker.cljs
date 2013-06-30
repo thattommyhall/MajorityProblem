@@ -7,10 +7,21 @@
 
 (log "Inside worker")
 
-(def population (make-array 200))
-
 (defn process-sample [sample]
+  (doseq [genome sample]
+    (let [result (make-array 0)
+          fitness (sim/fitness genome)
+          ]
+      ;; (log genome)
+      (.push result genome)
+      (.push result fitness)
+      (POST (+ "/results/" genome "/" fitness) "")
+      (js/setTimeout run 0))))
 
-(GET "/sample" (fn [sample]
-                 (process-sample (.parse js/JSON sample))))
+(defn ^:export run [] 
+  (GET "/sample" (fn [sample]
+                   (process-sample (.parse js/JSON sample)))))
+
+(run)
+  
                 

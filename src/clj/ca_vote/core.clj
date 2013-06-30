@@ -4,9 +4,10 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [shoreleave.middleware.rpc :refer [defremote wrap-rpc]]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [clojure.string :as string]))
 
-(declare send-results get-sample random-genome)
+(declare send-results send-result get-sample random-genome)
 
 (defn for-env [env]
   (let [onload "ca_vote.display.draw();"]
@@ -28,14 +29,14 @@
 (def size 128)
 
 (defn random-genome []
-  (doall (for [_ (range size)]
-           (if (> (rand) 0.5)
-             true
-             false))))
+  (apply str (for [_ (range size)]
+               (if (> (rand) 0.5)
+                 "1"
+                 "0"))))
 
 (def population 
   (agent (zipmap (repeatedly random-genome)                  
-                 (take 1000 (repeat 0.00000001)))))
+                 (take 1000 (repeat 5)))))
   
 (defroutes app-routes
   (GET "/" []
@@ -43,11 +44,11 @@
   (GET "/prod" []
        (for-env "prod"))
   (GET "/sample" []
-       (json/write-str (get-sample 5)))
+       (json/write-str (get-sample 50)))
   (GET "/pop" []
        @population)
-  (POST "/results" {results :body}
-        (println (slurp results))
+  (POST "/results/:genome/:fitness" [genome fitness]
+        (send-result genome fitness)
         "meh")
         
   (route/resources "/")
@@ -64,6 +65,13 @@
   (send population merge results)
   nil)
 
+(defn send-result [genome fitness]
+  (println genome fitness)
+  (send population assoc genome (Integer/parseInt fitness))
+  (println (count @population))
+  nil)
+
+
 (defn take-until-sum 
   ([map total] (take-until-sum map total 0))
   ([map total so-far]
@@ -73,13 +81,26 @@
          (ffirst map)))))
      
 (defn sample [population total]
-  (println "sampling")
   (let [position (rand total)]
     (take-until-sum population position)))
 
-(defremote get-sample [n]
+(defn mutate [c]
+  (if (< (rand) 0.001)
+    (if (= c \0) \1 \0)
+    c))
+
+(defn breed [g1 g2]
+  (let [split-point (Math/floor (rand 128))]
+    (map mutate (apply str 
+                       (concat (take split-point g1)
+                               (drop split-point g2))))))
+
+(defn get-sample [n]
   (let [population @population
         total (reduce + (vals population))]
     (doall (for [_ (range n)]
-             (sample population total)))))
+             (breed (sample population total)
+                    (sample population total))))))
 
+
+  

@@ -24,7 +24,7 @@
       (= l last-count))))
 
 (defn random-grid []
-  (let [p 0.5
+  (let [p (rand)
         result (make-array cells)
         ]
     (forloop [(i 0) (< i cells) (inc i)]
@@ -50,32 +50,32 @@
              0))
         2)))
 
-;;;; Commented out gkl creation as it leads to 6k lines of JS
-;; (def gkl
-;;   (let [g (make-array 128)]
-;;     (doseq [l3 [0 1]
-;;             l2 [0 1]
-;;             l1 [0 1]
-;;             c [0 1]
-;;             r1 [0 1]
-;;             r2 [0 1]
-;;             r3 [0 1]]
-;;       (aset g
-;;             (+ (* 64 l3)
-;;                (* 32 l2)
-;;                (* 16 l1)
-;;                (* 8 c)
-;;                (* 4 r1)
-;;                (* 2 r2)
-;;                (* 1 r3))
+;; Commented out gkl creation as it leads to 6k lines of JS
+(def gkl
+  (let [g (make-array 128)]
+    (doseq [l3 [0 1]
+            l2 [0 1]
+            l1 [0 1]
+            c [0 1]
+            r1 [0 1]
+            r2 [0 1]
+            r3 [0 1]]
+      (aset g
+            (+ (* 64 l3)
+               (* 32 l2)
+               (* 16 l1)
+               (* 8 c)
+               (* 4 r1)
+               (* 2 r2)
+               (* 1 r3))
             
-;;             (if (= c 1)
-;;               (>= (+ c r1 r3) 2)
-;;               (>= (+ c l1 l3) 2) 
-;;               )))
-;;     g))
+            (if (= c 1)
+              (>= (+ c r1 r3) 2)
+              (>= (+ c l1 l3) 2) 
+              )))
+    g))
 
-(def gkl (js* "[false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,false,true,true,true,true,true]"))
+;; (def gkl (js* "[false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,false,true,true,true,true,true]"))
 
 
 (defn strategy-from-genome [genome]
@@ -115,6 +115,6 @@
 
 (defn fitness [genome]
   (let [strategy (strategy-from-genome genome)]
-    (log strategy)
+    ;; (log strategy)
     (count (filter success? (take 100 (repeatedly #(run-sim strategy)))))))
 
