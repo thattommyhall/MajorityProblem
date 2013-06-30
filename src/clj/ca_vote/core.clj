@@ -80,6 +80,7 @@
 
 (def app (-> (var handler)
              (allow-co)
+             (allow)
              (handler/site)))
 
 (defn send-results [results]
