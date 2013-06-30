@@ -3,6 +3,6 @@ stop on runlevel [!2345]
  
 env PORT=80
 
-chdir /var/www/ca/current
+chdir /var/www/MajorityProblem/current
 
 exec lein ring server  >> /var/log/ca.log 2>&1
