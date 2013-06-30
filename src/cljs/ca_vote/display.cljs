@@ -5,9 +5,10 @@
             [ca-vote.simulation :as sim]
             [ca-vote.simulationold :as simold]
             [shoreleave.remotes.http-rpc :refer [remote-callback]]
+            [ca-vote.ajax :refer [GET POST]]
             )
   (:require-macros [shoreleave.remotes.macros :as macros])
-  (:use-macros [ca-vote.macros :only [forloop local << >>] ]))
+  (:use-macros [ca-vote.macros :only [forloop local << >>]]))
 
 (def line_colour "#cdcdcd")
 (def background "#eee")
@@ -33,10 +34,10 @@
                @cell_size))
 
 (defn alive [x y context]
-  (fill_sq x y liveColor context))
+  (js/setTimeout #(fill_sq x y liveColor context),0))
 
 (defn dead [x y context]
-  (fill_sq x y deadColor context))
+  (js/setTimeout #(fill_sq x y deadColor context),0))
 
 (defn draw-grid [grid]
   (let [board (by-id "voting")
@@ -46,8 +47,8 @@
         ]
     (reset! cell_size (/ (- width (* 2 padding))
                          cells))
-    (doseq [x (range cells)
-            y (range cells)]
+    (doseq [y (range cells)
+            x (range cells)]
       (if (aget (aget grid y) x)
         (alive x y context)
         (dead x y context)))))
@@ -60,46 +61,48 @@
         ]
     (reset! cell_size (/ (- width (* 2 padding))
                          cells))
-    (forloop [(x 0) (< x cells) (inc x)]
-             (forloop [(y 0) (< y cells) (inc y)]
+    (forloop [(y 0) (< y cells) (inc y)]
+             (forloop [(x 0) (< x cells) (inc x)]
                       (if (aget (aget grid y) x)
                         (alive x y context)
                         (dead x y context))))))
 
-
-
-(defn send [results]
-  (puts "sending" results)
-  (remote-callback :send-results
-                   [results]
-                   (fn [n]
-                     (puts "sent: " results ", got: " n))
-                   ))
-
-(defn get-samples []
-  (remote-callback :get-samples
-                   []
-                   (fn [s]
-                     (puts s))))
-
 (defn draw-loop []
   
-  ;; (dotimes [_ 5]
-  ;;   (trace #(sim/run-sim sim/gkl)))
+  (dotimes [_ 5]
+    (trace #(sim/run-sim sim/gkl)))
   ;; (dotimes [_ 5]
   ;;   (trace #(draw-grid (sim/run-sim sim/gkl))))
   (trace #(draw-grid-new (sim/run-sim sim/gkl)))
-  (puts (send {:a 4 :b 5}))
-  (puts (send {:b 7 :d 2}))
-  (puts (send {}))
-  (get-samples)
+  ;; (puts (send { 4 :b 5}))
+  ;; (puts (send {: 7 :d 2}))
+  ;; (puts (send {}))
+  ;; (get-sample 200)
   ;; (js/setTimeout #(draw-loop) 1)
   )
 
+(defn start-worker []
+  (log "Starting worker")
+  (js/Worker. "js/worker.js"))
+
 (defn ^:export draw []
-  (let [test (sim/run-sim sim/gkl)]
+  (let [population (make-array 200)
+        worker (start-worker)
+        ]
+    ;; (start-worker)
+    ;; (.postMessage worker "start")
+    (.addEventListener worker 
+                       "message" 
+                       (fn [e]
+                          (log (.-data e))))
+
     (draw-loop)
-    
+    (trace #(log (sim/fitness sim/gkl)))
+    (GET "/sample" (fn [sample]
+                     (.concat population (.parse js/JSON sample))
+                     (js/setTimeout #(log population) 2000)
+                     (log population)))
+
     ;; (draw-grid-new test)
     ;; (log (sim/count-live (aget test 0)))
     ;; (log (sim/count-live (aget test 100)))

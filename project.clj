@@ -13,6 +13,7 @@
                  [domina "1.0.2-SNAPSHOT"]
                  [shoreleave/shoreleave-remote-ring "0.3.0"]
                  [shoreleave/shoreleave-remote "0.3.0"]
+                 [org.clojure/data.json "0.2.2"]
                  ]
 
   :plugins [[lein-cljsbuild "0.3.2"]
@@ -35,6 +36,13 @@
                        :worker
                        {:source-paths ["src/worker"]
                         :compiler {:output-to "resources/public/js/worker.js"
-                                   :optimizations :advanced}}
+                                   :optimizations :advanced
+                                   ;; :optimizations :whitespace
+                                   :pretty-print true
+                                   }
+                       
+                        
+                        }
 
                }})
+

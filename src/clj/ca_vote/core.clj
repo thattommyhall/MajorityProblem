@@ -3,7 +3,10 @@
         [hiccup.core])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
-            [shoreleave.middleware.rpc :refer [defremote wrap-rpc]]))
+            [shoreleave.middleware.rpc :refer [defremote wrap-rpc]]
+            [clojure.data.json :as json]))
+
+(declare send-results get-sample random-genome)
 
 (defn for-env [env]
   (let [onload "ca_vote.display.draw();"]
@@ -24,13 +27,29 @@
 
 (def size 128)
 
-(declare merge-results)
+(defn random-genome []
+  (doall (for [_ (range size)]
+           (if (> (rand) 0.5)
+             true
+             false))))
+
+(def population 
+  (agent (zipmap (repeatedly random-genome)                  
+                 (take 1000 (repeat 0.00000001)))))
   
 (defroutes app-routes
   (GET "/" []
        (for-env "dev"))
   (GET "/prod" []
-       (for-env "prod"))  
+       (for-env "prod"))
+  (GET "/sample" []
+       (json/write-str (get-sample 5)))
+  (GET "/pop" []
+       @population)
+  (POST "/results" {results :body}
+        (println (slurp results))
+        "meh")
+        
   (route/resources "/")
   (route/not-found "Page not found"))
 
@@ -41,34 +60,26 @@
              (wrap-rpc)
              (handler/site)))
 
-(defn random-genome []
-  (doall (for [_ (range size)]
-           (if (> (rand) 0.5)
-             true
-             false))))
-
-
-(def population (agent (apply sorted-map (interleave (take 100 (repeatedly #(/ (rand 1000))))
-                                                     (repeatedly random-genome)))))
-
-(defremote send-results [results]
+(defn send-results [results]
   (send population merge results)
   nil)
 
 (defn take-until-sum 
   ([map total] (take-until-sum map total 0))
   ([map total so-far]
-     (if (< (+ so-far (ffirst map)) total)
-       (recur (rest map) total (+ so-far (ffirst map)))
-       (second (first map)))))
+     (let [current-fitness (second (first map))]
+       (if (< (+ so-far current-fitness) total)
+         (recur (rest map) total (+ so-far current-fitness))
+         (ffirst map)))))
      
 (defn sample [population total]
+  (println "sampling")
   (let [position (rand total)]
     (take-until-sum population position)))
-    
+
 (defremote get-sample [n]
   (let [population @population
-        total (reduce + (keys population))]
+        total (reduce + (vals population))]
     (doall (for [_ (range n)]
              (sample population total)))))
 

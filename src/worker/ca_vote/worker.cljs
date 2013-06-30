@@ -1,17 +1,16 @@
 (ns ca-vote.worker
-  (:use [ca-vote.simulation :only [run-sim random-grid]]
-        [ca-vote.utils :only [log puts now trace]]
-  ))
+  (:require [ca-vote.simulation :as sim]
+            [ca-vote.ajax :refer [GET POST]]))
 
+(defn log [message]
+  (js/postMessage message))
 
+(log "Inside worker")
 
-(log "Running the sim")
+(def population (make-array 200))
 
-(forloop [(i 0) (< i 11) (inc i)]
-         (trace (run-sim (random-grid))))
+(defn process-sample [sample]
 
-
-
-
-
-
+(GET "/sample" (fn [sample]
+                 (process-sample (.parse js/JSON sample))))
+                
