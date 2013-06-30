@@ -39,6 +39,12 @@
     (let [response (handler request)]
       (assoc-in response [:headers "Access-Control-Allow-Origin"] "*"))))
 
+
+(defn allow [handler]
+  (fn [request]
+    (let [response (handler request)]
+      (assoc-in response [:headers "Access-Control-Allow-Headers"] "Origin, X-Requested-With, Content-Type, Accept"))))
+
 (def population 
   (agent (zipmap (repeatedly random-genome)                  
                  (take 100 (repeat 50)))))
