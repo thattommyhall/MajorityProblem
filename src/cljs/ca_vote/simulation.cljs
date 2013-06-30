@@ -50,7 +50,6 @@
              0))
         2)))
 
-;; Commented out gkl creation as it leads to 6k lines of JS
 (def gkl
   (let [g (make-array 128)]
     (doseq [l3 [0 1]

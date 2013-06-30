@@ -86,7 +86,7 @@
   (js/Worker. "js/worker.js"))
 
 (defn ^:export draw []
-  (dotimes [_ 4]
+  (dotimes [_ 1]
     (let [worker (start-worker)]
       (.addEventListener worker 
                          "message" 
