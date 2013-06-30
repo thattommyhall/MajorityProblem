@@ -51,7 +51,7 @@
 
 (defroutes app-routes
   (GET "/" []
-       (for-env "prod"))
+       (for-env "dev"))
   (GET "/dev" []
        (for-env "dev"))
   (GET "/sample" []
