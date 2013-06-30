@@ -4,10 +4,8 @@
   (:require [clojure.string :as string]
             [ca-vote.simulation :as sim]
             [ca-vote.simulationold :as simold]
-            [shoreleave.remotes.http-rpc :refer [remote-callback]]
             [ca-vote.ajax :refer [GET POST]]
             )
-  (:require-macros [shoreleave.remotes.macros :as macros])
   (:use-macros [ca-vote.macros :only [forloop local << >>]]))
 
 (def line_colour "#cdcdcd")

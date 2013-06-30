@@ -39,9 +39,9 @@
 
 (defroutes app-routes
   (GET "/" []
-       (for-env "dev"))
-  (GET "/prod" []
        (for-env "prod"))
+  (GET "/dev" []
+       (for-env "dev"))
   (GET "/sample" []
        (json/write-str (get-sample 50)))
   (GET "/pop" []
@@ -67,7 +67,6 @@
   (handler/site app-routes))
 
 (def app (-> (var handler)
-             (wrap-rpc)
              (handler/site)))
 
 (defn send-results [results]

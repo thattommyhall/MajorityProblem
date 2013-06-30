@@ -11,8 +11,6 @@
                  [compojure "1.1.5"]
                  [hiccup "1.0.3"]
                  [domina "1.0.2-SNAPSHOT"]
-                 [shoreleave/shoreleave-remote-ring "0.3.0"]
-                 [shoreleave/shoreleave-remote "0.3.0"]
                  [org.clojure/data.json "0.2.2"]
                  ]
 
