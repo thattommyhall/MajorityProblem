@@ -1,5 +1,6 @@
 (ns ca-vote.simulation
   (:use-macros [ca-vote.macros :only [forloop local << >>] ])
+  (:require [ca-vote.utils :refer [log]])
   ;; (:use [ca-vote.utils :only [log puts]])
   )
 
@@ -103,19 +104,17 @@
                (aset next x false)))
     next))
 
-(defn run-sim [genome]
+(defn run-sim [strategy]
   (let [result (make-array cells)
         init (random-grid)
-        strategy (strategy-from-genome genome)]
+        ]
     (aset result 0 init)
     (forloop [(i 1) (< i cells) (inc i)]
              (aset result i (step (aget result (dec i)) strategy)))
     result))
 
 (defn fitness [genome]
-  (count (filter success? (take 100 (repeatedly #(run-sim genome))))))
-
-
-
-
+  (let [strategy (strategy-from-genome genome)]
+    (log strategy)
+    (count (filter success? (take 100 (repeatedly #(run-sim strategy)))))))
 

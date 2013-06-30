@@ -70,10 +70,10 @@
 (defn draw-loop []
   
   (dotimes [_ 5]
-    (trace #(sim/run-sim sim/gkl)))
+    (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
   ;; (dotimes [_ 5]
   ;;   (trace #(draw-grid (sim/run-sim sim/gkl))))
-  (trace #(draw-grid-new (sim/run-sim sim/gkl)))
+  (trace #(draw-grid-new (sim/run-sim (sim/strategy-from-genome sim/gkl))))
   ;; (puts (send { 4 :b 5}))
   ;; (puts (send {: 7 :d 2}))
   ;; (puts (send {}))
