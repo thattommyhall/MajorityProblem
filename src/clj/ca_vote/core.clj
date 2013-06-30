@@ -3,6 +3,7 @@
         [hiccup.core])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
+            [ring.util.response :refer [header]]
             [clojure.data.json :as json]
             [clojure.string :as string]))
 
@@ -33,6 +34,11 @@
                  "1"
                  "0"))))
 
+(defn allow-co [handler]
+  (fn [request]
+    (let [response (handler request)]
+      (assoc-in response [:headers "Access-Control-Allow-Origin"] "*"))))
+
 (def population 
   (agent (zipmap (repeatedly random-genome)                  
                  (take 100 (repeat 50)))))
@@ -57,8 +63,8 @@
                           "fittest" { "genome" fittest-genome
                                       "fitness" fittest-fitness }
                           "average_fitness" (/ (reduce + (vals population))
-                                               (count population))
-                          })))
+                                               (count population))})
+         ))
   
   (route/resources "/")
   (route/not-found "Page not found"))
@@ -67,6 +73,7 @@
   (handler/site app-routes))
 
 (def app (-> (var handler)
+             (allow-co)
              (handler/site)))
 
 (defn send-results [results]

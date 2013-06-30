@@ -65,23 +65,36 @@
                         (alive x y context)
                         (dead x y context))))))
 
-(defn draw-loop []
-  (dotimes [_ 5]
-    (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
-  (trace #(draw-grid-new (sim/run-sim (sim/strategy-from-genome sim/gkl)))))
+(def stats (atom {}))
+
+(defn get-stats []
+  (GET "/stats" (fn [s]
+                  (reset! stats (.parse js/JSON s)))))
+
+(js/setInterval get-stats 1000)
+
+(defn draw-fittest []
+  (let [fittest (.-genome (.-fittest @stats))]
+    (trace #(draw-grid-new (sim/run-sim
+                            (sim/strategy-from-genome 
+                             fittest))))))
 
 (defn start-worker []
   (log "Starting worker")
   (js/Worker. "js/worker.js"))
 
 (defn ^:export draw []
+  (dotimes [_ 5]
+    (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
+
   (dotimes [_ 2]
     (let [worker (start-worker)]
       (.addEventListener worker 
                          "message" 
                          (fn [e]
                            (puts "wk: " (.-data e))))))
-  
-  
-  (draw-loop))
+  (get-stats)
+  (js/setInterval get-stats 5000)
+  (js/setInterval draw-fittest 2000)
+  )
 
