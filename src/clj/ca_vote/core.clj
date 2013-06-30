@@ -3,7 +3,6 @@
         [hiccup.core])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
-            [shoreleave.middleware.rpc :refer [defremote wrap-rpc]]
             [clojure.data.json :as json]
             [clojure.string :as string]))
 
@@ -13,7 +12,7 @@
   (let [onload "ca_vote.display.draw();"]
     (html [:head {:title env}                           
            [:script {:src (str "js/" env ".js")}]
-           [:link {:rel "stylesheet" :href "/css/style.css"}]]
+           [:link {:rel "stylesheet" :href "css/style.css"}]]
           [:body {:onload onload}
            [:canvas#voting {:width "800" :height "800"}]
            [:div#stats 
@@ -54,13 +53,13 @@
        (let [population @population
              fittest-genome (apply max-key population (keys population))
              fittest-fitness (population fittest-genome)]
-       (json/write-str {"population_size" (count population)
-                        "fittest" { "genome" fittest-genome
-                                    "fitness" fittest-fitness }
-                        "average_fitness" (/ (reduce + (vals population))
-                                             (count population))
-                                                     })))
-        
+         (json/write-str {"population_size" (count population)
+                          "fittest" { "genome" fittest-genome
+                                      "fitness" fittest-fitness }
+                          "average_fitness" (/ (reduce + (vals population))
+                                               (count population))
+                          })))
+  
   (route/resources "/")
   (route/not-found "Page not found"))
 
@@ -83,11 +82,9 @@
                                {}
                                (take n (repeatedly #(sample population total ))))))))
 
-                     
-
 (defn send-result [genome fitness]
   (println genome fitness)
-  (println (count @population))
+  ;; (println (count @population))
   (send population assoc genome (Integer/parseInt fitness))
   (if (> (count @population) 300)
     (shrink-population 100))

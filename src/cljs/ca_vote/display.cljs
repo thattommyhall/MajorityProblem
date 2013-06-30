@@ -68,25 +68,16 @@
                         (dead x y context))))))
 
 (defn draw-loop []
-  
   (dotimes [_ 5]
     (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
-  ;; (dotimes [_ 5]
-  ;;   (trace #(draw-grid (sim/run-sim sim/gkl))))
-  (trace #(draw-grid-new (sim/run-sim (sim/strategy-from-genome sim/gkl))))
-  ;; (puts (send { 4 :b 5}))
-  ;; (puts (send {: 7 :d 2}))
-  ;; (puts (send {}))
-  ;; (get-sample 200)
-  ;; (js/setTimeout #(draw-loop) 1)
-  )
+  (trace #(draw-grid-new (sim/run-sim (sim/strategy-from-genome sim/gkl)))))
 
 (defn start-worker []
   (log "Starting worker")
   (js/Worker. "js/worker.js"))
 
 (defn ^:export draw []
-  (dotimes [_ 1]
+  (dotimes [_ 2]
     (let [worker (start-worker)]
       (.addEventListener worker 
                          "message" 
@@ -94,7 +85,5 @@
                            (puts "wk: " (.-data e))))))
   
   
-  (draw-loop)
-  (trace #(log (sim/fitness sim/gkl)))
-  )
+  (draw-loop))
 
