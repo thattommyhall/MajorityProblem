@@ -47,7 +47,7 @@
 
 (def population 
   (agent (zipmap (repeatedly random-genome)                  
-                 (take 100 (repeat 50)))))
+                 (take 100 (repeat 1)))))
 
 (defroutes app-routes
   (GET "/" []
