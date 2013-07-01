@@ -114,5 +114,5 @@
 (defn fitness [genome]
   (let [strategy (strategy-from-genome genome)]
     ;; (log strategy)
-    (* 10 (count (filter success? (take 100 (repeatedly #(run-sim strategy))))))))
+    (+ 100 (* 10 (count (filter success? (take 100 (repeatedly #(run-sim strategy)))))))))
 
