@@ -71,7 +71,7 @@
   (GET "/stats" (fn [s]
                   (reset! stats (.parse js/JSON s)))))
 
-(js/setInterval get-stats 1000)
+
 
 (defn draw-fittest []
   (let [fittest (.-genome (.-fittest @stats))]
@@ -86,8 +86,9 @@
 (defn ^:export draw []
   (dotimes [_ 5]
     (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
-
-  (dotimes [_ 2]
+  ;; (trace #(puts "fitness: " (sim/fitness sim/gkl)))
+  (draw-grid-new (sim/run-sim (sim/strategy-from-genome sim/gkl)))
+  (dotimes [_ 1]
     (let [worker (start-worker)]
       (.addEventListener worker 
                          "message" 
@@ -95,6 +96,7 @@
                            (puts "wk: " (.-data e))))))
   (get-stats)
   (js/setInterval get-stats 5000)
+  (js/setInterval #(.reload js/location) 900000);
   (js/setInterval draw-fittest 2000)
   )
 

@@ -50,32 +50,31 @@
              0))
         2)))
 
-(def gkl
-  (let [g (make-array 128)]
-    (doseq [l3 [0 1]
-            l2 [0 1]
-            l1 [0 1]
-            c [0 1]
-            r1 [0 1]
-            r2 [0 1]
-            r3 [0 1]]
-      (aset g
-            (+ (* 64 l3)
-               (* 32 l2)
-               (* 16 l1)
-               (* 8 c)
-               (* 4 r1)
-               (* 2 r2)
-               (* 1 r3))
+;; (def gkl
+;;   (let [g (make-array 128)]
+;;     (doseq [l3 [0 1]
+;;             l2 [0 1]
+;;             l1 [0 1]
+;;             c [0 1]
+;;             r1 [0 1]
+;;             r2 [0 1]
+;;             r3 [0 1]]
+;;       (aset g
+;;             (+ (* 64 l3)
+;;                (* 32 l2)
+;;                (* 16 l1)
+;;                (* 8 c)
+;;                (* 4 r1)
+;;                (* 2 r2)
+;;                (* 1 r3))
             
-            (if (= c 1)
-              (>= (+ c r1 r3) 2)
-              (>= (+ c l1 l3) 2) 
-              )))
-    g))
+;;             (if (= c 1)
+;;               (>= (+ c r1 r3) 2)
+;;               (>= (+ c l1 l3) 2) 
+;;               )))
+;;     g))
 
-;; (def gkl (js* "[false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,false,true,true,true,true,true]"))
-
+(def gkl "00000000010111110000000001011111000000000101111100000000010111110000000001011111111111110101111100000000010111111111111101011111")
 
 (defn strategy-from-genome [genome]
   (fn [pos grid]
@@ -93,8 +92,8 @@
                  (* 4 r1)
                  (* 2 r2)
                  (* 1 r3))]
-    (aget genome idx))))
-
+      (= "1" (aget genome idx)))))
+      
 (defn step [grid alive?]
   (let [next (make-array cells)]
     (forloop [(x 0) (< x cells) (inc x)]
