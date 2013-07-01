@@ -54,11 +54,11 @@
        (for-env "dev"))
   (GET "/dev" []
        (for-env "dev"))
-  (GET "/sample3" []
+  (GET "/sample4" []
        (json/write-str (get-sample 50)))
   (GET "/pop" []
        @population)
-  (POST "/results3/:genome/:fitness" [genome fitness]
+  (POST "/results4/:genome/:fitness" [genome fitness]
         (send-result genome fitness)
         "meh")
   (GET "/stats" []

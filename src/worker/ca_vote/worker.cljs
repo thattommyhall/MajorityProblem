@@ -10,11 +10,11 @@
 (defn process-sample [sample]
   (doseq [genome sample]
     (let [fitness (sim/fitness genome)]
-      (POST (+ "/results3/" genome "/" fitness) "")
+      (POST (+ "/results4/" genome "/" fitness) "")
       (js/setTimeout run 0))))
 
 (defn ^:export run [] 
-  (GET "/sample3" (fn [sample]
+  (GET "/sample4" (fn [sample]
                    (process-sample (.parse js/JSON sample)))))
 
 
