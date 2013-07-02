@@ -39,6 +39,13 @@
     (let [response (handler request)]
       (assoc-in response [:headers "Access-Control-Allow-Origin"] "*"))))
 
+(defn new-run-id []
+  (apply str (take 10 (repeatedly #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))))
+
+(def run-id (atom (new-run-id)))
+
+(defn reset-run-id []
+  (reset! run-id (new-run-id)))
 
 (defn allow [handler]
   (fn [request]
@@ -54,12 +61,14 @@
        (for-env "dev"))
   (GET "/dev" []
        (for-env "dev"))
-  (GET "/sample4" []
-       (json/write-str (get-sample 50)))
+  (GET "/sample" []
+       (json/write-str {"id" @run-id
+                        "sample" (get-sample 10)}))
   (GET "/pop" []
        @population)
-  (POST "/results4/:genome/:fitness" [genome fitness]
-        (send-result genome fitness)
+  (POST "/results/:id/:genome/:fitness" [id genome fitness]
+        (if (= id @run-id)
+          (send-result genome fitness))
         "meh")
   (GET "/stats" []
        (let [population @population
@@ -69,7 +78,8 @@
                           "fittest" { "genome" fittest-genome
                                       "fitness" fittest-fitness }
                           "average_fitness" (/ (reduce + (vals population))
-                                               (count population))})
+                                               (count population))
+                          "id" @run-id})
          ))
   
   (route/resources "/")
@@ -82,6 +92,7 @@
              (allow-co)
              (allow)
              (handler/site)))
+
 
 (defn send-results [results]
   (send population merge results)

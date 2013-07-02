@@ -67,11 +67,20 @@
 
 (def stats (atom {}))
 
+(def id "")
+
 (defn get-stats []
   (GET "/stats" (fn [s]
-                  (reset! stats (.parse js/JSON s)))))
-
-
+                  (reset! stats (.parse js/JSON s))
+                  )))
+                  
+(defn check-id []
+  (if-not (= (.-id @stats)
+             id)
+    (set! id (.-id @stats))
+    (reload-page)))
+                  
+  
 
 (defn draw-fittest []
   (let [fittest (.-genome (.-fittest @stats))]
@@ -83,11 +92,14 @@
   (log "Starting worker")
   (js/Worker. "js/worker.js"))
 
+
+(defn reload-page []
+  (log "reloading page")
+  (.reload js/location))
+
 (defn ^:export draw []
   (dotimes [_ 5]
     (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
-  ;; (trace #(puts "fitness: " (sim/fitness sim/gkl)))
-  (draw-grid-new (sim/run-sim (sim/strategy-from-genome sim/gkl)))
   (dotimes [_ 1]
     (let [worker (start-worker)]
       (.addEventListener worker 
@@ -96,7 +108,8 @@
                            (puts "wk: " (.-data e))))))
   (get-stats)
   (js/setInterval get-stats 5000)
-  (js/setInterval #(.reload js/location) 900000);
-  (js/setInterval draw-fittest 2000)
+  (js/setInterval check-id 5000)
+  (js/setInterval reload-page 6000000)
+  (js/setInterval draw-fittest 4000)
   )
 
