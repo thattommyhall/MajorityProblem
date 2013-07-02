@@ -9,9 +9,13 @@
 
 (declare send-results send-result get-sample random-genome sample)
 
+
+(def tweet-this "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://bit.ly/14On0mb\" data-text=\"Evolving automata to solve the #MajorityProblem http://bit.ly/14Omu7C with @thattommyhall, join me at\" data-dnt=\"true\">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>")
+
 (defn for-env [env]
   (let [onload "ca_vote.display.draw();"]
-    (html [:head {:title env}                           
+    (html [:head {:title "Majority Problem"}
            [:script {:src (str "js/" env ".js")}]
            [:script "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -22,15 +26,22 @@
                      ga('send', 'pageview');"]
            [:link {:rel "stylesheet" :href "css/style.css"}]]
           [:body {:onload onload}
-           [:canvas#voting {:width "800" :height "800"}]
+           [:h1 "Majority Problem"]
+           [:div tweet-this]
+           [:p "Please check out " 
+            [:a {:href "http://bit.ly/14Omu7C" :target "_"} "Wikipedia"] 
+            " to better understand what is going on here"]
+           [:canvas#voting {:width "600" :height "600"}]
            [:div#stats 
             "Fitness:"
             [:span#fitness 99]
             ]
+           
            [:div#fittest-dna "11111111111111111111111111"]
+           
            [:a {:href "http://brightbox.com?thattommyhall"}
             [:img {:src "http://brightbox.com/images/misc/logo.png"}]]
-           [:p "Proudly hosted on Brightbox"]
+           [:p "Hosted on Brightbox"]
            ]
           ))
 )
