@@ -1,5 +1,5 @@
 (ns ca-vote.display
-  (:use [domina :only [by-id]]
+  (:use [domina :only [by-id set-text!]]
         [ca-vote.utils :only [log puts now trace]])
   (:require [clojure.string :as string]
             [ca-vote.simulation :as sim]
@@ -71,7 +71,11 @@
 
 (defn get-stats []
   (GET "/stats" (fn [s]
-                  (reset! stats (.parse js/JSON s)))))
+                  (reset! stats (.parse js/JSON s))
+                  (log @stats)
+                  (set-text! (by-id "fitness") (.-fitness (.-fittest @stats) ))
+                  (set-text! (by-id "fittest-dna") (.-genome (.-fittest @stats) ))
+                  )))
 
 (defn check-id []
   (cond (= id "")

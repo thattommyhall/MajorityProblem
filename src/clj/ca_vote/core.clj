@@ -24,14 +24,16 @@
           [:body {:onload onload}
            [:canvas#voting {:width "800" :height "800"}]
            [:div#stats 
-            "Workers:"
-            [:span#workers 5]
             "Fitness:"
             [:span#fitness 99]
-            "Runtime:"
-            [:span#fitness 99]
-            ]]
-          )))
+            ]
+           [:div#fittest-dna "11111111111111111111111111"]
+           [:a {:href "http://brightbox.com?thattommyhall"}
+            [:img {:src "http://brightbox.com/images/misc/logo.png"}]]
+           [:p "Proudly hosted on Brightbox"]
+           ]
+          ))
+)
 
 (def size 128)
 
@@ -153,5 +155,3 @@
              (breed (sample population total)
                     (sample population total))))))
 
-
-  
