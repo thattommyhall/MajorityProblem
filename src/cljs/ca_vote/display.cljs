@@ -71,16 +71,16 @@
 
 (defn get-stats []
   (GET "/stats" (fn [s]
-                  (reset! stats (.parse js/JSON s))
-                  )))
-                  
+                  (reset! stats (.parse js/JSON s)))))
+
 (defn check-id []
-  (if-not (= (.-id @stats)
-             id)
-    (set! id (.-id @stats))
-    (reload-page)))
-                  
-  
+  (cond (= id "")
+        (set! id (.-id @stats))
+        
+        (not= (.-id @stats)
+              id)
+        (do (log "wrong id")
+            (reload-page))))
 
 (defn draw-fittest []
   (let [fittest (.-genome (.-fittest @stats))]
@@ -92,12 +92,12 @@
   (log "Starting worker")
   (js/Worker. "js/worker.js"))
 
-
 (defn reload-page []
   (log "reloading page")
   (.reload js/location))
 
 (defn ^:export draw []
+  (get-stats)
   (dotimes [_ 5]
     (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
   (dotimes [_ 1]
@@ -106,10 +106,12 @@
                          "message" 
                          (fn [e]
                            (puts "wk: " (.-data e))))))
-  (get-stats)
+  
   (js/setInterval get-stats 5000)
   (js/setInterval check-id 5000)
   (js/setInterval reload-page 6000000)
+  (js/setTimeout draw-fittest 500)
   (js/setInterval draw-fittest 4000)
   )
+
 

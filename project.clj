@@ -39,12 +39,12 @@
                                    :pretty-print true
                                    }}
                         
-                        :cli
-                       {:source-paths ["src/cli"]
-                        :compiler {:output-to "resources/public/js/cli.js"
-                                   :optimizations :advanced
-                                   :pretty-print true
-                                   }}
+                       ;;  :cli
+                       ;; {:source-paths ["src/cli"]
+                       ;;  :compiler {:output-to "resources/public/js/cli.js"
+                       ;;             :optimizations :advanced
+                       ;;             :pretty-print true
+                       ;;             }}
                        
                        }})
 
