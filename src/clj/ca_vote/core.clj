@@ -13,7 +13,7 @@
 (def tweet-this "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://bit.ly/14On0mb\" data-text=\"Evolving automata to solve the #MajorityProblem http://bit.ly/14Omu7C with @thattommyhall, join me at\" data-dnt=\"true\">Tweet</a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>")
 
-(def fork-me "<a href=\"https://github.com/thattommyhall/MajorityProblem\"><img style=\"position: absolute; top: 0; right: 0; border: 0;\" src=\"https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png\" alt=\"Fork me on GitHub\" target=\"_gh\"></a>")
+(def fork-me "<a href=\"https://github.com/thattommyhall/MajorityProblem\" target=\"_gh\"\"><img style=\"position: absolute; top: 0; right: 0; border: 0;\" src=\"https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png\" alt=\"Fork me on GitHub\" ></a>")
 
 (defn for-env [env]
   (let [onload "ca_vote.display.draw();"]
@@ -42,7 +42,7 @@
            
            [:div#fittest-dna "11111111111111111111111111"]
            
-           [:a {:href "http://brightbox.com?thattommyhall"}
+           [:a {:href "http://brightbox.com?thattommyhall" :target "_bb"}
             [:img {:src "http://brightbox.com/images/misc/logo.png"}]]
            [:p "Hosted on Brightbox"]
            ]
