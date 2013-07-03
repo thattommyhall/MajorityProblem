@@ -73,9 +73,9 @@
 (defn get-stats []
   (GET "/stats" (fn [s]
                   (reset! stats (js->clj (.parse js/JSON s)))
-                  (puts @stats)
+                  ;; (puts @stats)
                   (set-text! (by-id "fitness") (get @stats "fittest-fitness"))
-                  (set-text! (by-id "fittest-dna") (get-in @stats "fittest-genome") )
+                  (set-text! (by-id "fittest-dna") (get @stats "fittest-genome") )
                   )))
 
 (defn check-id []
@@ -89,22 +89,22 @@
 
 (defn draw-fittest []
   (let [fittest (get @stats "fittest-genome")]
-    (trace #(draw-grid-new (sim/run-sim
-                            (sim/strategy-from-genome 
-                             fittest))))))
+    (draw-grid-new (sim/run-sim
+                    (sim/strategy-from-genome 
+                     fittest)))))
 
 (defn start-worker []
-  (log "Starting worker")
+  ;; (log "Starting worker")
   (js/Worker. "js/worker.js"))
 
 (defn reload-page []
-  (log "reloading page")
+  ;; (log "reloading page")
   (.reload js/location))
 
 (defn ^:export draw []
   (get-stats)
-  (dotimes [_ 5]
-    (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
+  ;; (dotimes [_ 5]
+  ;;   (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
   (dotimes [_ 1]
     (let [worker (start-worker)]
       (.addEventListener worker 
@@ -116,7 +116,7 @@
   (js/setInterval check-id 5000)
   (js/setInterval reload-page 6000000)
   (js/setTimeout draw-fittest 500)
-  (js/setInterval draw-fittest 4000)
+  (js/setInterval draw-fittest 2000)
   )
 
 
