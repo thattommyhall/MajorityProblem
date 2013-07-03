@@ -52,7 +52,7 @@
         (alive x y context)
         (dead x y context)))))
 
-(defn draw-grid-new [grid]
+(defn draw-grid-new [canvas-id grid]
   (let [board (.getElementById js/document "voting")
         context (.getContext board "2d")
         width (.-width board)
@@ -68,7 +68,7 @@
 
 (def stats (atom {}))
 
-(def id "")
+(def id (atom ""))
 
 (defn get-stats []
   (GET "/stats" (fn [s]
@@ -79,17 +79,19 @@
                   )))
 
 (defn check-id []
-  (cond (= id "")
-        (set! id (.-id @stats))
+  (cond (= @id "")
+        (reset! @id (@stats "id"))
         
-        (not= (.-id @stats)
-              id)
+        (not= (@stats "id")
+              @id)
         (do (log "wrong id")
             (reload-page))))
 
+
 (defn draw-fittest []
   (let [fittest (get @stats "fittest-genome")]
-    (draw-grid-new (sim/run-sim
+    (draw-grid-new "voting"
+                   (sim/run-sim
                     (sim/strategy-from-genome 
                      fittest)))))
 
@@ -113,7 +115,7 @@
                            (puts "wk: " (.-data e))))))
   
   (js/setInterval get-stats 5000)
-  (js/setInterval check-id 5000)
+  (js/setInterval check-id 3000)
   (js/setInterval reload-page 6000000)
   (js/setTimeout draw-fittest 500)
   (js/setInterval draw-fittest 2000)
