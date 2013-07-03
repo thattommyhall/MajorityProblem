@@ -9,8 +9,8 @@
 (defn process-sample [sample]
   (doseq [genome sample]
     (let [fitness (sim/fitness genome)]
-      (POST (+ "/results/" id "/" genome "/" fitness) "")
-      (js/setTimeout run 0))))
+      (POST (+ "/results/" id "/" genome "/" fitness) "")))
+  (js/setTimeout run 0))
 
 (defn ^:export run [] 
   (GET "/sample" (fn [sample]
