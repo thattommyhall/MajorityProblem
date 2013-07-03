@@ -100,8 +100,8 @@
              fittest-genome (apply max-key population (keys population))
              fittest-fitness (population fittest-genome)]
          (json/write-str {"population_size" (count population)
-                          "fittest" { "genome" fittest-genome
-                                      "fitness" fittest-fitness }
+                          "fittest-genome" fittest-genome
+                          "fittest-fitness" fittest-fitness 
                           "average_fitness" (/ (reduce + (vals population))
                                                (count population))
                           "id" @run-id})

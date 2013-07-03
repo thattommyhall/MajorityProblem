@@ -73,9 +73,9 @@
 (defn get-stats []
   (GET "/stats" (fn [s]
                   (reset! stats (js->clj (.parse js/JSON s)))
-                  (log @stats)
-                  (set-text! (by-id "fitness") (get-in @stats ["fittest" "fitness"]) )
-                  (set-text! (by-id "fittest-dna") (get-in @stats ["fittest" "genome"]) )
+                  (puts @stats)
+                  (set-text! (by-id "fitness") (get @stats "fittest-fitness"))
+                  (set-text! (by-id "fittest-dna") (get-in @stats "fittest-genome") )
                   )))
 
 (defn check-id []
@@ -88,7 +88,7 @@
             (reload-page))))
 
 (defn draw-fittest []
-  (let [fittest (.-genome (.-fittest @stats))]
+  (let [fittest (get @stats "fittest-genome")]
     (trace #(draw-grid-new (sim/run-sim
                             (sim/strategy-from-genome 
                              fittest))))))
