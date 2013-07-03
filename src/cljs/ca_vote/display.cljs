@@ -8,6 +8,7 @@
             )
   (:use-macros [ca-vote.macros :only [forloop local << >>]]))
 
+
 (def line_colour "#cdcdcd")
 (def background "#eee")
 (def liveColor "#666")
@@ -71,10 +72,10 @@
 
 (defn get-stats []
   (GET "/stats" (fn [s]
-                  (reset! stats (.parse js/JSON s))
+                  (reset! stats (js->clj (.parse js/JSON s)))
                   (log @stats)
-                  (set-text! (by-id "fitness") (.-fitness (.-fittest @stats) ))
-                  (set-text! (by-id "fittest-dna") (.-genome (.-fittest @stats) ))
+                  (set-text! (by-id "fitness") (get-in @stats ["fittest" "fitness"]) )
+                  (set-text! (by-id "fittest-dna") (get-in @stats ["fittest" "genome"]) )
                   )))
 
 (defn check-id []
