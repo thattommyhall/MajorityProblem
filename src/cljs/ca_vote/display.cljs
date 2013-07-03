@@ -38,21 +38,21 @@
 (defn dead [x y context]
   (js/setTimeout #(fill_sq x y deadColor context),0))
 
-(defn draw-grid [grid]
-  (let [board (by-id "voting")
-        context (.getContext board "2d")
-        width (.-width board)
-        height (.-height board)
-        ]
-    (reset! cell_size (/ (- width (* 2 padding))
-                         cells))
-    (doseq [y (range cells)
-            x (range cells)]
-      (if (aget (aget grid y) x)
-        (alive x y context)
-        (dead x y context)))))
+;; (defn draw-grid [grid]
+;;   (let [board (by-id "voting")
+;;         context (.getContext board "2d")
+;;         width (.-width board)
+;;         height (.-height board)
+;;         ]
+;;     (reset! cell_size (/ (- width (* 2 padding))
+;;                          cells))
+;;     (doseq [y (range cells)
+;;             x (range cells)]
+;;       (if (aget (aget grid y) x)
+;;         (alive x y context)
+;;         (dead x y context)))))
 
-(defn draw-grid-new [canvas-id grid]
+(defn draw-grid [canvas-id grid]
   (let [board (.getElementById js/document "voting")
         context (.getContext board "2d")
         width (.-width board)
@@ -80,7 +80,7 @@
 
 (defn check-id []
   (cond (= @id "")
-        (reset! @id (@stats "id"))
+        (reset! id (@stats "id"))
         
         (not= (@stats "id")
               @id)
@@ -90,7 +90,7 @@
 
 (defn draw-fittest []
   (let [fittest (get @stats "fittest-genome")]
-    (draw-grid-new "voting"
+    (draw-grid "voting"
                    (sim/run-sim
                     (sim/strategy-from-genome 
                      fittest)))))
@@ -103,7 +103,7 @@
   ;; (log "reloading page")
   (.reload js/location))
 
-(defn ^:export draw []
+(defn ^:export init []
   (get-stats)
   ;; (dotimes [_ 5]
   ;;   (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))

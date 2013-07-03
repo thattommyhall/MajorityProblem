@@ -16,7 +16,7 @@
 (def fork-me "<a href=\"https://github.com/thattommyhall/MajorityProblem\" target=\"_gh\"\"><img style=\"position: absolute; top: 0; right: 0; border: 0;\" src=\"https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png\" alt=\"Fork me on GitHub\" ></a>")
 
 (defn for-env [env]
-  (let [onload "ca_vote.display.draw();"]
+  (let [onload "ca_vote.display.init();"]
     (html [:head {:title "Majority Problem"}
            [:script {:src (str "js/" env ".js")}]
            [:script "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
