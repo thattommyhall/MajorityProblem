@@ -6,9 +6,16 @@
 
 (def id "")
 
+(defn log [message]
+  (js/postMessage message))
+
+(log "Inside worker")
+
 (defn process-sample [sample]
   (doseq [genome sample]
     (let [fitness (sim/fitness genome)]
+      (log fitness)
+      (log genome)
       (POST (+ "/results/" id "/" genome "/" fitness) "")))
   (js/setTimeout run 0))
 
@@ -22,6 +29,9 @@
                      (process-sample sample)
                      ))))
 
+
 (run)
   
                 
+
+

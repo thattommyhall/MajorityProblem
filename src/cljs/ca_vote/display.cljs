@@ -103,8 +103,8 @@
                  fittest)))))
 
 (defn start-worker []
-  ;; (log "Starting worker")
-  (js/Worker. "js/worker.js"))
+  (log "Starting worker now")
+  (js/Worker. "/js/worker.js"))
 
 (defn reload-page []
   ;; (log "reloading page")
