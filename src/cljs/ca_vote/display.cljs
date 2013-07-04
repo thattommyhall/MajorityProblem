@@ -87,13 +87,16 @@
         (do (log "wrong id")
             (reload-page))))
 
+(defn ^:export draw [canvas-id genome]
+  (draw-grid canvas-id
+             (sim/run-sim
+              (sim/strategy-from-genome 
+               genome))))
+
 
 (defn draw-fittest []
-  (let [fittest (get @stats "fittest-genome")]
-    (draw-grid "voting"
-                   (sim/run-sim
-                    (sim/strategy-from-genome 
-                     fittest)))))
+  (let [fittest (@stats "fittest-genome")]
+    (draw "voting" fittest)))
 
 (defn start-worker []
   ;; (log "Starting worker")
@@ -105,8 +108,8 @@
 
 (defn ^:export init []
   (get-stats)
-  ;; (dotimes [_ 5]
-  ;;   (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
+  (dotimes [_ 5]
+    (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
   (dotimes [_ 1]
     (let [worker (start-worker)]
       (.addEventListener worker 

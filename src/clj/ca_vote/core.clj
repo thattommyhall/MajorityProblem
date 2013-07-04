@@ -102,7 +102,7 @@
          (json/write-str {"population_size" (count population)
                           "fittest-genome" fittest-genome
                           "fittest-fitness" fittest-fitness 
-                          "average_fitness" (/ (reduce + (vals population))
+                          "average-fitness" (/ (reduce + (vals population))
                                                (count population))
                           "id" @run-id})
          ))
