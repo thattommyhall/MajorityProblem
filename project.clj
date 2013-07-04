@@ -32,7 +32,7 @@
                                    :optimizations :advanced}}
 
                        :worker
-                       {:source-paths ["src/worker" "src/cljs"]
+                       {:source-paths ["src/worker"]
                         :compiler {:output-to "resources/public/js/worker.js"
                                    ;; :optimizations :advanced
                                    :optimizations :whitespace
