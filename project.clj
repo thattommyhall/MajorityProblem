@@ -32,11 +32,11 @@
                                    :optimizations :advanced}}
 
                        :worker
-                       {:source-paths ["src/worker"]
+                       {:source-paths ["src/worker" "src/cljs"]
                         :compiler {:output-to "resources/public/js/worker.js"
-                                   :optimizations :advanced
-                                   ;; :optimizations :whitespace
-                                   ;; :pretty-print true
+                                   ;; :optimizations :advanced
+                                   :optimizations :whitespace
+                                   :pretty-print true
                                    }}
                         
                        ;;  :cli
