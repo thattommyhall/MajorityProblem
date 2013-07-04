@@ -15,28 +15,27 @@
 (def deadColor "#eee")
 (def padding 0)
 (def cells 101)
-(def cell_size (atom 0))
 (def p 0.5)
 
-(defn fill_sq [x y colour context]
+(defn fill_sq [x y colour cell_size context]
   (set! (.-fillStyle context) colour)
   (set! (.-strokeStyle context) colour)
   (.fillRect context
-             (+ (* x @cell_size) padding)
-             (+ (* y @cell_size) padding)
-             @cell_size
-             @cell_size)
+             (+ (* x cell_size) padding)
+             (+ (* y cell_size) padding)
+             cell_size
+             cell_size)
   (.strokeRect context
-               (+ (* x @cell_size) padding)
-               (+ (* y @cell_size) padding)
-               @cell_size
-               @cell_size))
+               (+ (* x cell_size) padding)
+               (+ (* y cell_size) padding)
+               cell_size
+               cell_size))
 
 (defn alive [x y context]
-  (js/setTimeout #(fill_sq x y liveColor context),0))
+  (js/setTimeout #(fill_sq x y liveColor cell_size context),0))
 
 (defn dead [x y context]
-  (js/setTimeout #(fill_sq x y deadColor context),0))
+  (js/setTimeout #(fill_sq x y deadColor cell_size context),0))
 
 ;; (defn draw-grid [grid]
 ;;   (let [board (by-id "voting")
@@ -57,14 +56,13 @@
         context (.getContext board "2d")
         width (.-width board)
         height (.-height board)
-        ]
-    (reset! cell_size (/ (- width (* 2 padding))
-                         cells))
+        cell_size (/ (- width (* 2 padding))
+                         cells)]
     (forloop [(y 0) (< y cells) (inc y)]
              (forloop [(x 0) (< x cells) (inc x)]
                       (if (aget (aget grid y) x)
-                        (alive x y context)
-                        (dead x y context))))))
+                        (alive x y cell_size context)
+                        (dead x y cell_size context))))))
 
 (def stats (atom {}))
 
