@@ -53,7 +53,7 @@
 ;;         (dead x y context)))))
 
 (defn draw-grid [canvas-id grid]
-  (let [board (.getElementById js/document "voting")
+  (let [board (.getElementById js/document canvas-id)
         context (.getContext board "2d")
         width (.-width board)
         height (.-height board)
@@ -88,15 +88,19 @@
             (reload-page))))
 
 (defn ^:export draw [canvas-id genome]
-  (draw-grid canvas-id
-             (sim/run-sim
-              (sim/strategy-from-genome 
-               genome))))
-
+  (let [f #(draw-grid canvas-id
+                      (sim/run-sim
+                       (sim/strategy-from-genome genome)
+                       0.5))]
+    (js/setTimeout f 500)
+    (js/setInterval f 3000)))
 
 (defn draw-fittest []
-  (let [fittest (@stats "fittest-genome")]
-    (draw "voting" fittest)))
+  (let [fittest (get @stats "fittest-genome")]
+    (draw-grid "voting"
+               (sim/run-sim
+                (sim/strategy-from-genome 
+                 fittest)))))
 
 (defn start-worker []
   ;; (log "Starting worker")
@@ -120,8 +124,8 @@
   (js/setInterval get-stats 5000)
   (js/setInterval check-id 3000)
   (js/setInterval reload-page 6000000)
-  (js/setTimeout draw-fittest 500)
-  (js/setInterval draw-fittest 2000)
+  (js/setTimeout draw-fittest 700)
+  (js/setInterval draw-fittest 2500)
   )
 
 

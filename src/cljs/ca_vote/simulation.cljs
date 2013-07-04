@@ -23,10 +23,8 @@
       (= 0 last-count)
       (= l last-count))))
 
-(defn random-grid []
-  (let [p (rand)
-        result (make-array cells)
-        ]
+(defn random-grid [p]
+  (let [result (make-array cells)]
     (forloop [(i 0) (< i cells) (inc i)]
              (aset result i (> p (rand))))
     result))
@@ -102,14 +100,18 @@
                (aset next x false)))
     next))
 
-(defn run-sim [strategy]
-  (let [result (make-array cells)
-        init (random-grid)
-        ]
-    (aset result 0 init)
-    (forloop [(i 1) (< i cells) (inc i)]
-             (aset result i (step (aget result (dec i)) strategy)))
-    result))
+(defn run-sim 
+  ([strategy]
+     (run-sim strategy (rand)))
+  ([strategy p]
+     (let [result (make-array cells)
+           init (random-grid p)
+           ]
+       (aset result 0 init)
+       (forloop [(i 1) (< i cells) (inc i)]
+                (aset result i (step (aget result (dec i)) strategy)))
+       result)))
+
 
 (defn fitness [genome]
   (let [strategy (strategy-from-genome genome)]
