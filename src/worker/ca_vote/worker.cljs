@@ -2,6 +2,7 @@
   (:require [ca-vote.simulation :as sim]
             [ca-vote.ajax :refer [GET POST]]))
 
+
 (declare run)
 
 (def id "")

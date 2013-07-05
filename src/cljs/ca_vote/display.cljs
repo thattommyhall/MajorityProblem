@@ -14,7 +14,7 @@
 (def liveColor "#666")
 (def deadColor "#eee")
 (def padding 0)
-(def cells 101)
+(def cells 100)
 (def p 0.5)
 
 (defn fill_sq [x y colour cell_size context]
@@ -31,11 +31,18 @@
                cell_size
                cell_size))
 
-(defn alive [x y context]
-  (js/setTimeout #(fill_sq x y liveColor cell_size context),0))
+(defn new-canvas [width height]
+  (let [canvas  (.createElement js/document "canvas")]
+    (set! (.-width canvas) width)
+    (set! (.-height canvas) width)
+    canvas))
 
-(defn dead [x y context]
-  (js/setTimeout #(fill_sq x y deadColor cell_size context),0))
+
+(defn alive [x y cell_size context]
+  (fill_sq x y liveColor cell_size context))
+
+(defn dead [x y cell_size context]
+  (fill_sq x y deadColor cell_size context))
 
 ;; (defn draw-grid [grid]
 ;;   (let [board (by-id "voting")
@@ -56,13 +63,16 @@
         context (.getContext board "2d")
         width (.-width board)
         height (.-height board)
+        temp-canvas (new-canvas width height)
+        temp-context (.getContext temp-canvas "2d")
         cell_size (/ (- width (* 2 padding))
-                         cells)]
+                     cells)]
     (forloop [(y 0) (< y cells) (inc y)]
              (forloop [(x 0) (< x cells) (inc x)]
                       (if (aget (aget grid y) x)
-                        (alive x y cell_size context)
-                        (dead x y cell_size context))))))
+                        (alive x y cell_size temp-context)
+                        (dead x y cell_size temp-context))))
+    (.drawImage context temp-canvas 0 0)))
 
 (def stats (atom {}))
 
@@ -91,7 +101,7 @@
                        (sim/strategy-from-genome genome)
                        0.5))]
     (js/setTimeout f 500)
-    (js/setInterval f 3000)))
+    (js/setInterval f 5000)))
 
 (defn draw-fittest []
   (let [fittest (get @stats "fittest-genome")]
@@ -109,6 +119,7 @@
   (.reload js/location))
 
 (defn ^:export init []
+  
   (get-stats)
   (dotimes [_ 5]
     (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
@@ -123,7 +134,5 @@
   (js/setInterval check-id 3000)
   (js/setInterval reload-page 6000000)
   (js/setTimeout draw-fittest 700)
-  (js/setInterval draw-fittest 2500)
+  (js/setInterval #(trace (fn [] (draw-fittest))) 2500)
   )
-
-
