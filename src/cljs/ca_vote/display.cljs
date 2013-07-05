@@ -96,11 +96,11 @@
             (reload-page))))
 
 (defn ^:export draw [canvas-id genome]
-  (let [f #(draw-grid canvas-id
-                      (sim/run-sim
-                       (sim/strategy-from-genome genome)))]
-    (js/setTimeout f 500)
-    (js/setInterval f 5000)))
+  (draw-grid canvas-id
+             (sim/run-sim
+              (sim/strategy-from-genome genome)))
+  (js/setTimeout #(draw canvas-id genome) (+ 5000
+                                             (* 5000 (rand)))))
 
 (defn draw-fittest []
   (let [fittest (get @stats "fittest-genome")]
@@ -128,10 +128,10 @@
                          "message" 
                          (fn [e]
                            (puts "wk: " (.-data e))))))
-  
+  (draw "voting" sim/gkl)
   (js/setInterval get-stats 5000)
   (js/setInterval check-id 3000)
   (js/setInterval reload-page 6000000)
-  (js/setTimeout draw-fittest 700)
-  (js/setInterval #(trace (fn [] (draw-fittest))) 2500)
+  ;; (js/setTimeout draw-fittest 700)
+  ;; (js/setInterval #(trace (fn [] (draw-fittest))) 2500)
   )
