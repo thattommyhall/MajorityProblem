@@ -98,8 +98,7 @@
 (defn ^:export draw [canvas-id genome]
   (let [f #(draw-grid canvas-id
                       (sim/run-sim
-                       (sim/strategy-from-genome genome)
-                       0.5))]
+                       (sim/strategy-from-genome genome)))]
     (js/setTimeout f 500)
     (js/setInterval f 5000)))
 
