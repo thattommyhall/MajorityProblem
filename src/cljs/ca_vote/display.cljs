@@ -37,7 +37,6 @@
     (set! (.-height canvas) width)
     canvas))
 
-
 (defn alive [x y cell_size context]
   (fill_sq x y liveColor cell_size context))
 
@@ -98,9 +97,7 @@
 (defn ^:export draw [canvas-id genome]
   (draw-grid canvas-id
              (sim/run-sim
-              (sim/strategy-from-genome genome)))
-  (js/setTimeout #(draw canvas-id genome) (+ 5000
-                                             (* 5000 (rand)))))
+              (sim/strategy-from-genome genome))))
 
 (defn draw-fittest []
   (let [fittest (get @stats "fittest-genome")]
@@ -118,20 +115,20 @@
   (.reload js/location))
 
 (defn ^:export init []
-  
   (get-stats)
   (dotimes [_ 5]
     (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
-  (dotimes [_ 1]
-    (let [worker (start-worker)]
-      (.addEventListener worker 
-                         "message" 
-                         (fn [e]
-                           (puts "wk: " (.-data e))))))
-  ;; (draw "voting" sim/gkl)
-  (js/setInterval get-stats 5000)
-  (js/setInterval check-id 3000)
-  (js/setInterval reload-page 6000000)
-  (js/setTimeout draw-fittest 700)
-  (js/setInterval #(trace (fn [] (draw-fittest))) 2500)
+  ;; (dotimes [_ 1]
+  ;;   (let [worker (start-worker)]
+  ;;     (.addEventListener worker 
+  ;;                        "message" 
+  ;;                        (fn [e]
+  ;;                          (puts "wk: " (.-data e))))))
+  (draw "voting" sim/gkl)
+  
+  ;; (js/setInterval get-stats 5000)
+  ;; (js/setInterval check-id 3000)
+  ;; (js/setInterval reload-page 6000000)
+  ;; (js/setTimeout draw-fittest 700)
+  ;; (js/setInterval #(trace (fn [] (draw-fittest))) 2500)
   )
