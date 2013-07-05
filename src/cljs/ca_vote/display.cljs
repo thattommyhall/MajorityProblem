@@ -128,10 +128,10 @@
                          "message" 
                          (fn [e]
                            (puts "wk: " (.-data e))))))
-  (draw "voting" sim/gkl)
+  ;; (draw "voting" sim/gkl)
   (js/setInterval get-stats 5000)
   (js/setInterval check-id 3000)
   (js/setInterval reload-page 6000000)
-  ;; (js/setTimeout draw-fittest 700)
-  ;; (js/setInterval #(trace (fn [] (draw-fittest))) 2500)
+  (js/setTimeout draw-fittest 700)
+  (js/setInterval #(trace (fn [] (draw-fittest))) 2500)
   )
