@@ -34,20 +34,6 @@
     (+ n cells)
     (rem n cells)))
 
-(defn alive? [pos grid] 
-  (let [current (aget grid pos)
-        direction (if-not current
-                    -1
-                    1)]
-    (>= (+ (if (aget grid pos) 1 0)
-           (if (aget grid (+ pos direction))
-             1 
-             0)
-           (if (aget grid (+ pos (* 3 direction)))
-             1
-             0))
-        2)))
-
 ;; (def gkl
 ;;   (let [g (make-array 128)]
 ;;     (doseq [l3 [0 1]
@@ -92,10 +78,10 @@
                  (* 1 r3))]
       (= "1" (aget genome idx)))))
       
-(defn step [grid alive?]
+(defn step [grid strategy]
   (let [next (make-array cells)]
     (forloop [(x 0) (< x cells) (inc x)]
-             (if (alive? x grid)
+             (if (strategy x grid)
                (aset next x true)
                (aset next x false)))
     next))
@@ -111,7 +97,6 @@
        (forloop [(i 1) (< i cells) (inc i)]
                 (aset result i (step (aget result (dec i)) strategy)))
        result)))
-
 
 (defn fitness [genome]
   (let [strategy (strategy-from-genome genome)]
