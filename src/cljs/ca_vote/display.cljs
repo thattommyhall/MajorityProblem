@@ -43,20 +43,6 @@
 (defn dead [x y cell_size context]
   (fill_sq x y deadColor cell_size context))
 
-;; (defn draw-grid [grid]
-;;   (let [board (by-id "voting")
-;;         context (.getContext board "2d")
-;;         width (.-width board)
-;;         height (.-height board)
-;;         ]
-;;     (reset! cell_size (/ (- width (* 2 padding))
-;;                          cells))
-;;     (doseq [y (range cells)
-;;             x (range cells)]
-;;       (if (aget (aget grid y) x)
-;;         (alive x y context)
-;;         (dead x y context)))))
-
 (defn draw-grid [canvas-id grid]
   (let [board (.getElementById js/document canvas-id)
         context (.getContext board "2d")
@@ -80,7 +66,6 @@
 (defn get-stats []
   (GET "/stats" (fn [s]
                   (reset! stats (js->clj (.parse js/JSON s)))
-                  ;; (puts @stats)
                   (set-text! (by-id "fitness") (get @stats "fittest-fitness"))
                   (set-text! (by-id "fittest-dna") (get @stats "fittest-genome") )
                   )))
@@ -111,24 +96,25 @@
   (js/Worker. "/js/worker.js"))
 
 (defn reload-page []
-  ;; (log "reloading page")
   (.reload js/location))
 
 (defn ^:export init []
   (get-stats)
-  (dotimes [_ 5]
-    (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
+  ;; (dotimes [_ 10]
+  ;;   (trace #(sim/run-sim (sim/strategy-from-genome sim/gkl))))
+  ;; (log "old")
+  ;; (dotimes [_ 10]
+  ;;   (trace #(simold/run-sim (simold/random-grid))))
+
   (dotimes [_ 1]
     (let [worker (start-worker)]
       (.addEventListener worker 
                          "message" 
                          (fn [e]
                            (puts "wk: " (.-data e))))))
-  ;; (draw "voting" sim/gkl)
   
   (js/setInterval get-stats 5000)
   (js/setInterval check-id 3000)
   (js/setInterval reload-page 6000000)
   (js/setTimeout draw-fittest 700)
-  (js/setInterval #(trace (fn [] (draw-fittest))) 2500)
-  )
+  (js/setInterval #(trace (fn [] (draw-fittest))) 2500))
