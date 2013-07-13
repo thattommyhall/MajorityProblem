@@ -3,7 +3,6 @@
         [ca-vote.utils :only [log puts now trace]])
   (:require [clojure.string :as string]
             [ca-vote.simulation :as sim]
-            [ca-vote.simulationold :as simold]
             [ca-vote.ajax :refer [GET POST]]
             )
   (:use-macros [ca-vote.macros :only [forloop local << >>]]))
@@ -43,6 +42,14 @@
 (defn dead [x y cell_size context]
   (fill_sq x y deadColor cell_size context))
 
+(defn get-image [filename]
+  (let [img (js/Image.)]
+    (set! (.-src img) (str "images/" filename ".png"))
+    img))
+
+(def tick (get-image "tick"))
+(def cross (get-image "cross"))
+
 (defn draw-grid [canvas-id grid]
   (let [board (.getElementById js/document canvas-id)
         context (.getContext board "2d")
@@ -57,7 +64,15 @@
                       (if (aget (aget grid y) x)
                         (alive x y cell_size temp-context)
                         (dead x y cell_size temp-context))))
-    (.drawImage context temp-canvas 0 0)))
+    (.drawImage context temp-canvas 0 0)
+    (.drawImage context (if (sim/success? grid)
+                          tick
+                          cross)
+                (* 2 (/ width 5))
+                (* 2 (/ height 5))
+                (/ width 5)
+                (/ height 5)
+                )))
 
 (def stats (atom {}))
 
