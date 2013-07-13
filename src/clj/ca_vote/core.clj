@@ -17,7 +17,7 @@
 
 (defn for-env [env]
   (let [onload "ca_vote.display.init();"]
-    (html [:head {:title "Majority Problem"}
+    (html [:head {:title "Evolving Cellular Automata"}
            [:script {:src (str "js/" env ".js")}]
            [:script "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -28,19 +28,21 @@
                      ga('send', 'pageview');"]
            [:link {:rel "stylesheet" :href "css/style.css"}]]
           [:body {:onload onload}
-           [:h1 "Majority Problem"]
+           [:p]
            fork-me
            [:div tweet-this]
-           [:p "Please check out " 
-            [:a {:href "http://bit.ly/14Omu7C" :target "_"} "Wikipedia"] 
-            " to better understand what is going on here"]
-           [:canvas#voting {:width "600" :height "600"}]
+           [:p]
+           [:div [:canvas#voting {:width "600" :height "600"}]]
            [:div#stats 
             "Fitness:"
             [:span#fitness 99]
             ]
+           [:p 
+            [:ul 
+             [:li [:a {:href "http://www.thattommyhall.com/2013/07/04/evolving-cellular-automata/" :target "_"} "Evolving Cellular Automata"]]
+             [:li [:a {:href "http://www.thattommyhall.com/2013/07/04/evolving-cellular-automata-the-code/" :target "_"} "Evolving Cellular Automata - The Code"]]]]
+       
            
-           [:div#fittest-dna "11111111111111111111111111"]
            
            [:a {:href "http://brightbox.com?thattommyhall" :target "_bb"}
             [:img {:src "http://brightbox.com/images/misc/logo.png"}]]
