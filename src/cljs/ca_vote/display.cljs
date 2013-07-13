@@ -44,7 +44,7 @@
 
 (defn get-image [filename]
   (let [img (js/Image.)]
-    (set! (.-src img) (str "images/" filename ".png"))
+    (set! (.-src img) (str "http://ca.thattommyhall.com/images/" filename ".png"))
     img))
 
 (def tick (get-image "tick"))
