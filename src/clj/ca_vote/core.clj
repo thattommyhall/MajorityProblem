@@ -38,12 +38,9 @@
             [:span#fitness 99]
             ]
            [:p 
-            [:ul 
-             [:li [:a {:href "http://www.thattommyhall.com/2013/07/04/evolving-cellular-automata/" :target "_"} "Evolving Cellular Automata"]]
-             [:li [:a {:href "http://www.thattommyhall.com/2013/07/04/evolving-cellular-automata-the-code/" :target "_"} "Evolving Cellular Automata - The Code"]]]]
-       
-           
-           
+            [:a {:href "http://www.thattommyhall.com/2013/07/04/evolving-cellular-automata/" :target "_"} "Evolving Cellular Automata"]]
+           [:p
+            [:a {:href "http://www.thattommyhall.com/2013/07/04/evolving-cellular-automata-the-code/" :target "_"} "Evolving Cellular Automata - The Code"]]
            [:a {:href "http://brightbox.com?thattommyhall" :target "_bb"}
             [:img {:src "http://brightbox.com/images/misc/logo.png"}]]
            [:p "Hosted on Brightbox"]
