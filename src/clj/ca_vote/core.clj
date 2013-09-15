@@ -33,11 +33,11 @@
            [:div tweet-this]
            [:p]
            [:div [:canvas#voting {:width "600" :height "600"}]]
-           [:div#stats 
+           [:div#stats
             "Fitness:"
             [:span#fitness 99]
             ]
-           [:p 
+           [:p
             [:a {:href "http://www.thattommyhall.com/2013/07/04/evolving-cellular-automata/" :target "_"} "Evolving Cellular Automata"]]
            [:p
             [:a {:href "http://www.thattommyhall.com/2013/07/07/evolving-cellular-automata-the-code/" :target "_"} "Evolving Cellular Automata - The Code"]]
@@ -74,8 +74,8 @@
     (let [response (handler request)]
       (assoc-in response [:headers "Access-Control-Allow-Headers"] "Origin, X-Requested-With, Content-Type, Accept"))))
 
-(def population 
-  (agent (zipmap (repeatedly random-genome)                  
+(def population
+  (agent (zipmap (repeatedly random-genome)
                  (take 100 (repeat 1)))))
 
 (defroutes app-routes
@@ -100,12 +100,12 @@
              fittest-fitness (population fittest-genome)]
          (json/write-str {"population_size" (count population)
                           "fittest-genome" fittest-genome
-                          "fittest-fitness" fittest-fitness 
+                          "fittest-fitness" fittest-fitness
                           "average-fitness" (/ (reduce + (vals population))
                                                (count population))
                           "id" @run-id})
          ))
-  
+
   (route/resources "/")
   (route/not-found "Page not found"))
 
@@ -139,14 +139,14 @@
   nil)
 
 
-(defn take-until-sum 
+(defn take-until-sum
   ([map total] (take-until-sum map total 0))
   ([map total so-far]
      (let [current-fitness (second (first map))]
        (if (< (+ so-far current-fitness) total)
          (recur (rest map) total (+ so-far current-fitness))
          (ffirst map)))))
-     
+
 (defn sample [population total]
   (let [position (rand total)]
     (take-until-sum population position)))
@@ -167,4 +167,3 @@
     (doall (for [_ (range n)]
              (breed (sample population total)
                     (sample population total))))))
-
