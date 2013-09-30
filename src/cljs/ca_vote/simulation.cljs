@@ -98,7 +98,7 @@
                 (aset result i (step (aget result (dec i)) strategy)))
        result)))
 
-(defn ^:export fitness [genome]
+(defn fitness [genome]
   (let [strategy (strategy-from-genome genome)]
     ;; (log strategy)
     (count (filter success? (take 100 (repeatedly #(run-sim strategy)))))))
