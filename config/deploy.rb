@@ -26,8 +26,14 @@ task :update_upstart do
   sudo "mv -f /tmp/upstart /etc/init/ca.conf"
 end
 
+namespace :nginx do
+  task :reload do
+    sudo "service nginx reload"
+  end
+end
+
 before "deploy:restart", :update_upstart, "deploy:compile_js"
-after "deploy:restart", "deploy:cleanup"
+after "deploy:restart", "deploy:cleanup", "nginx:reload"
 
 namespace :deploy do
   task :compile_js do
