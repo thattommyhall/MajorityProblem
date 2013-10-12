@@ -1,0 +1,6 @@
+server {
+  server_name life.thattommyhall.com;
+  location / {
+    proxy_pass  http://localhost:8001;
+  }
+}

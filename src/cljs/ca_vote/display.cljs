@@ -7,7 +7,6 @@
             )
   (:use-macros [ca-vote.macros :only [forloop local << >>]]))
 
-
 (def line_colour "#cdcdcd")
 (def background "#eee")
 (def liveColor "#666")
@@ -88,7 +87,7 @@
 (defn check-id []
   (cond (= @id "")
         (reset! id (@stats "id"))
-        
+
         (not= (@stats "id")
               @id)
         (do (log "wrong id")
@@ -103,7 +102,7 @@
   (let [fittest (get @stats "fittest-genome")]
     (draw-grid "voting"
                (sim/run-sim
-                (sim/strategy-from-genome 
+                (sim/strategy-from-genome
                  fittest)))))
 
 (defn start-worker []
@@ -123,11 +122,11 @@
 
   (dotimes [_ 1]
     (let [worker (start-worker)]
-      (.addEventListener worker 
-                         "message" 
+      (.addEventListener worker
+                         "message"
                          (fn [e]
                            (puts "wk: " (.-data e))))))
-  
+
   (js/setInterval get-stats 5000)
   (js/setInterval check-id 3000)
   (js/setInterval reload-page 6000000)
