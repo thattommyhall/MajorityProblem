@@ -43,7 +43,7 @@
             [:a {:href "http://www.thattommyhall.com/2013/07/07/evolving-cellular-automata-the-code/" :target "_"} "Evolving Cellular Automata - The Code"]]
            [:a {:href "http://brightbox.com?thattommyhall" :target "_bb"}
             [:img {:src "http://brightbox.com/images/misc/logo.png"}]]
-           [:p "Hosted on Brightbox"]
+           [:p "Hosted on Brightbox ARRRGH"]
            ]
           ))
 )
