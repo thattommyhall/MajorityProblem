@@ -8,5 +8,6 @@ Check out the explanation on my blog [part 1](http://www.thattommyhall.com/2013/
 ## License
 
 Copyright © 2013 Tom Hall
-
+  
 Distributed under the Eclipse Public License, the same as Clojure.
+   
